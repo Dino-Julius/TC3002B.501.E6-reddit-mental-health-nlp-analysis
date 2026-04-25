@@ -1,0 +1,67 @@
+# macOS metadata
+.DS_Store
+
+# Python virtual environment and cache directories
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Jupyter autosave checkpoints
+.ipynb_checkpoints/
+
+# Generic build and packaging artifacts
+build/
+dist/
+*.egg-info/
+
+# Local-only reference material and large private context files
+context/
+
+# Keep only placeholders/docs in raw data; ignore actual local datasets
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/README.md
+
+# Keep the interim data directory in the repo, but not generated contents
+data/interim/*
+!data/interim/.gitkeep
+
+# Keep the processed data directory in the repo, but not generated contents
+data/processed/*
+!data/processed/.gitkeep
+
+# Reports
+# Track report source files by default.
+# Ignore generated LaTeX/build artifacts recursively inside reports/.
+
+reports/**/build/
+reports/**/*.aux
+reports/**/*.bbl
+reports/**/*.bcf
+reports/**/*.blg
+reports/**/*.fdb_latexmk
+reports/**/*.fls
+reports/**/*.log
+reports/**/*.out
+reports/**/*.run.xml
+reports/**/*.spl
+reports/**/*.synctex.gz
+reports/**/*.toc
+reports/**/*.lof
+reports/**/*.lot
+reports/**/*.zip
+
+# Generated PDFs inside reports
+reports/**/*.pdf
+!reports/state-of-the-art/*.pdf
+
+# But allow final deliverable PDFs
+!reports/**/deliverables/*.pdf
+
+# Notebook-specific checkpoints inside notebooks/
+notebooks/.ipynb_checkpoints/
+
+# Temporary files directory
+tmp/
