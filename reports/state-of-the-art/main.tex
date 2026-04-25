@@ -1,0 +1,80 @@
+\documentclass[final,5p,times,authoryear]{elsarticle}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{adjustbox}
+\usepackage{longtable}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{placeins}
+
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\makeatletter
+\pdfstringdefDisableCommands{%
+  \def\@fnmark{}%
+  \def\fnref#1{}%
+  \def\corref#1{}%
+  \def\tnoteref#1{}%
+  \def\comma{, }%
+}
+\makeatother
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue,
+  pdftitle={Análisis computacional de salud mental en Reddit: estado del arte en PLN y modelos de lenguaje},
+  pdfauthor={Jaramillo P. Ulises; Ponce M. Fernanda; Vivas M. Julio C.}
+}
+
+\graphicspath{{figures/}}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Análisis computacional de salud mental en Reddit: estado del arte en PLN y modelos de lenguaje}
+
+\author[tec]{Jaramillo P. Ulises\fnref{ulises}}
+\author[tec]{Ponce M. Fernanda\fnref{fernanda}}
+\author[tec]{Vivas M. Julio C.\fnref{julio}}
+
+\fntext[ulises]{Matrícula: A01798380}
+\fntext[fernanda]{Matrícula: A01799293}
+\fntext[julio]{Matrícula: A01749879}
+
+\address[tec]{TC3002B.501 Desarrollo de aplicaciones avanzadas de ciencias computacionales, Equipo 6, Tecnológico de Monterrey Campus Estado de México, Escuela de Ingeniería y Ciencias}
+
+\begin{abstract}
+Este manuscrito corresponde al entregable de Fase 1 del reto TC3002B.501 y presenta una revisión del estado del arte sobre la detección computacional de señales de salud mental en texto de redes sociales, con énfasis en Reddit. En lugar de proponer un modelo experimental, este trabajo se concentra en analizar críticamente literatura científica reciente para identificar tendencias, aportaciones, limitaciones y oportunidades de investigación relevantes para el desarrollo posterior de una herramienta computacional. La revisión integra trece artículos sobre procesamiento de lenguaje natural (PLN), aprendizaje automático, aprendizaje profundo, modelos basados en transformers y modelos de lenguaje de gran escala aplicados a depresión, ideación suicida y enfoques clínicamente fundamentados en DSM-5. El análisis se organiza a partir de la dimensión seleccionada para el proyecto, a saber, la efectividad predictiva y la interpretabilidad clínica. A partir de esta lectura comparativa, se distinguen avances importantes en desempeño cuantitativo, así como brechas persistentes en explicabilidad, anotación experta, generalización y utilidad clínica.
+\end{abstract}
+
+\begin{keyword}
+salud mental \sep redes sociales \sep Reddit \sep procesamiento de lenguaje natural \sep aprendizaje automático \sep detección de depresión \sep ideación suicida \sep DSM-5 \sep modelos de lenguaje
+\end{keyword}
+
+\end{frontmatter}
+
+\input{sections/01_introduction}
+\input{sections/02_problem_context}
+\input{sections/03_literature_selection}
+\input{sections/04_state_of_the_art}
+\input{tables/state_of_the_art_table}
+\FloatBarrier
+\input{sections/05_comparative_analysis}
+\input{sections/06_research_gaps}
+\input{sections/07_conclusion}
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{references}
+
+\end{document}
