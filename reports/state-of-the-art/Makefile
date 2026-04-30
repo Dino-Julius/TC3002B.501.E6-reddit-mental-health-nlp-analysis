@@ -8,5 +8,5 @@ clean:
 	rm -rf build
 
 zip:
-	rm -f TC3002B-StateOfTheArt-LaTeX.zip
-	zip -r TC3002B-StateOfTheArt-LaTeX.zip main.tex references.bib sections tables figures Makefile .latexmkrc README.md
+	rm -f TC3002B.501.E6-StateOfTheArt-LaTeX.zip
+	zip -r TC3002B.501.E6-StateOfTheArt-LaTeX.zip main.tex references.bib sections tables figures Makefile .latexmkrc README.md
