@@ -1,0 +1,17 @@
+flowchart TD
+    Start([Inicio]) --> A[Recibir CSV de publicaciones]
+    A --> B[Validar columnas requeridas]
+    B --> C{¿Datos válidos?}
+    C -- No --> E[Reportar error de validación]
+    E --> End([Fin])
+    C -- Sí --> F[Separar datos por user_id]
+    F --> G[Preprocesar title y text]
+    G --> H[Extraer características TF-IDF]
+    H --> I[Entrenar o aplicar clasificador baseline]
+    I --> J[Generar predicción y score]
+    J --> K{¿Existen etiquetas reales?}
+    K -- Sí --> L[Calcular ROC AUC, recall, precisión, F1 y matriz de confusión]
+    K -- No --> M[Guardar solo predicciones y puntajes]
+    L --> N[Generar reporte interpretativo]
+    M --> N
+    N --> End
