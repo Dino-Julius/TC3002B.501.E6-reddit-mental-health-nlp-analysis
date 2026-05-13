@@ -1,0 +1,34 @@
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\begin{table*}[!t]
+\centering
+\caption{Corpus analizado para la revisión del estado del arte, organizado por prioridad de lectura y caracterización metodológica.}
+\label{tab:state-of-the-art}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{4pt}
+\footnotesize
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{P{0.05\textwidth} P{0.11\textwidth} P{0.12\textwidth} P{0.13\textwidth} P{0.12\textwidth} P{0.08\textwidth} P{0.19\textwidth} P{0.17\textwidth}}
+\toprule
+Prioridad & Problema & Fuente de datos & Representación textual & Modelo & Métricas & Contribución principal & Limitaciones \\
+\midrule
+1 & Detección general de trastornos mentales & Literatura científica y múltiples plataformas & Rasgos léxicos, semánticos y metadatos & Revisión de literatura & F1, P, R, Acc., AUC, ROC, ERDE & Sistematiza tendencias, conjuntos de datos, algoritmos y retos del área & No propone un modelo nuevo y depende de evidencia heterogénea \\
+2 & Ideación suicida en redes sociales & 37 estudios sobre Twitter, Reddit, Weibo y microblogs & Rasgos lingüísticos, psicométricos, metadatos e interacción & Revisión de métodos de ML y DL & P, R, F1, Acc. & Resume plataformas, conjuntos de datos y algoritmos para suicidalidad & Sesgo al inglés y comparación indirecta entre estudios \\
+3 & Depresión basada en síntomas DSM-5 & 1484 publicaciones largas de Reddit & Oraciones anotadas por síntoma y racionales clínicos & SVM, CNN, BERT y LLM ajustado & Acc.; micro, macro y weighted F1 & Presenta ReDSM5 con anotación experta y explicación a nivel síntoma & Cobertura limitada al inglés y alto costo de anotación profesional \\
+4 & Detección temprana de ideación suicida & Reddit & N-grams, BoW, TF-IDF y \textit{embeddings} & CNN, LSTM, LSTM-CNN, SVM, NB, RF, XGBoost & Acc., P, R, F1 & Valida que LSTM-CNN supera baselines clásicos & Conjunto de datos limitado y baja interpretabilidad \\
+5 & Ideación suicida multimodal & Reddit y Twitter & Rasgos lingüísticos, tópicos, afecto, temporalidad y personalidad & LR, SVM, RF, XGBoost & Acc., P, R, F1, kappa & Integra seis grupos de rasgos para mejorar detección y comparación & Alta ingeniería de atributos y menor generalización \\
+6 & Cambio desde discurso de salud mental hacia ideación suicida & Subreddits de salud mental y r/SuicideWatch & Variables lingüísticas, interacción social y tokens de tratamiento & Emparejamiento por propensión y regresión logística & P, R, F1, ROC, AUC & Modela transición temporal y detecta marcadores conductuales de riesgo & Supone continuidad entre cuentas y depende de una ventana temporal específica \\
+7 & Mapeo de contenido de Reddit a categorías DSM-5 & 15 subreddits de salud mental & Tópicos, \textit{embeddings} y léxicos médicos & Clasificador multiclase con SEDO y ontologías & TPR, F1, falsas alarmas, kappa & Vincula contenido social con categorías clínicas y reduce falsas alarmas & Analiza subreddits, no usuarios o publicaciones individuales \\
+8 & Severidad de riesgo suicida & 2181 usuarios de Reddit; gold standard de 500 & Contenido normalizado con recursos médicos y léxico de severidad & CNN, SVM, RF, FFNN y baseline basado en reglas & Graded precision, graded recall, F-score, error ordinal & Propone un esquema de cinco niveles inspirado en C-SSRS & Conjunto de datos costoso y evaluación ordinal compleja \\
+9 & Detección temprana de ideación suicida & 232074 publicaciones de Reddit & Texto preprocesado y \textit{embeddings} contextuales & BERT, RoBERTa, DistilBERT, DistilRoBERTa, ELECTRA + Bi-GRU & Acc., P, R, F1, falsos negativos & Muestra la ventaja de combinar modelos de lenguaje con Bi-GRU & Prioriza rendimiento y ofrece poca explicación clínica \\
+10 & Comprensión lingüística de la suicidalidad & 2.9 millones de publicaciones de 30 subreddits de Reddit & \textit{Embeddings} de oraciones y dimensiones latentes & \textit{Embeddings} de LLM, reducción de dimensionalidad y XAI generativa & Análisis interpretativo & Relaciona patrones lingüísticos con teorías del suicidio y taxonomías dimensionales & No valida contra juicio clínico externo y usa una ventana temporal corta \\
+11 & Extracción y resumen de evidencia suicida & Dataset UMD/CLPsych con publicaciones de r/SuicideWatch & Texto del post y meta-información de riesgo, emoción y sentimiento & Mixtral 7B$\times$8 y Tulu-2-DPO-70B con \textit{prompting} & F1 de extracción y consistencia media & Convierte la tarea en recuperación de evidencia interpretable con LLMs & Depende del \textit{prompting} y de una tarea compartida acotada \\
+12 & Ideación suicida en publicaciones sociales & Twitter y Reddit & Análisis léxico, semántico y secuencial & LSTM + Bi-TCN con autoatención (AL-BTCN) & Acc., P, R, F1 & Propone una arquitectura escalable con memoria de largo alcance & Menor interpretabilidad y necesidad de más validación real \\
+13 & Severidad de depresión & Reddit & N-grams, \textit{sentence transformers} y \textit{embeddings} contextuales & XGB, RF, MLP, RoBERTa, BERT, DeBERTa & P, R, F1, Acc. & Compara líneas clásica, contextual y basada en transformers para severidad depresiva & Falta anclaje clínico explícito a síntomas DSM-5 o racionales expertos \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\vspace{2pt}
+
+\scriptsize\textit{Nota.} P = precisión, R = \textit{recall}, Acc. = \textit{accuracy}.
+\end{table*}

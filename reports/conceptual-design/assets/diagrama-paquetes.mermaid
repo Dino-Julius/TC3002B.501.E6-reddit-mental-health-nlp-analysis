@@ -1,0 +1,34 @@
+flowchart TB
+    subgraph PackageData["Paquete de datos"]
+        Data["data.py\nCarga y validación"]
+        Split["splitting.py\nParticionado por usuario"]
+    end
+
+    subgraph PackageText["Paquete de procesamiento textual"]
+        Prep["preprocessing.py\nNormalización textual"]
+        Feat["features.py\nTF-IDF"]
+    end
+
+    subgraph PackageModel["Paquete de modelado"]
+        Model["model.py\nClasificador baseline"]
+    end
+
+    subgraph PackageEval["Paquete de evaluación"]
+        Eval["evaluation.py\nMétricas"]
+        Interp["interpretability.py\nEvidencia textual"]
+    end
+
+    subgraph PackageConfig["Configuración"]
+        Config["config.py\nParámetros y rutas"]
+    end
+
+    Config --> PackageData
+    Config --> PackageText
+    Config --> PackageModel
+    Data --> Split
+    Split --> Prep
+    Prep --> Feat
+    Feat --> Model
+    Model --> Eval
+    Model --> Interp
+    Feat --> Interp
