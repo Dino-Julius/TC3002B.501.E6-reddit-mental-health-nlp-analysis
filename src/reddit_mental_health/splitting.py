@@ -1,4 +1,6 @@
-"""Particionado entrenamiento/validación sin fuga por usuario."""
+"""
+Este módulo particiona datos sin fuga entre usuarios.
+"""
 
 from __future__ import annotations
 
@@ -12,11 +14,14 @@ def separar_por_usuario(
     frame: pd.DataFrame,
     config: BaselineConfig,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Separa registros evitando usuarios compartidos entre train y validación."""
+    """
+    Separa registros evitando usuarios compartidos entre train y validación.
+    """
 
     if config.user_column not in frame.columns:
         raise ValueError(f"No existe la columna de usuario: {config.user_column}")
 
+    # El split por user_id evita fuga de publicaciones del mismo usuario.
     splitter = GroupShuffleSplit(
         n_splits=1,
         test_size=config.validation_size,

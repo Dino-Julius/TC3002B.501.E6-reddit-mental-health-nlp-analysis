@@ -1,4 +1,6 @@
-"""Pruebas del tracking ligero de experimentos."""
+"""
+Este módulo prueba el tracking ligero de experimentos.
+"""
 
 from __future__ import annotations
 
@@ -17,7 +19,9 @@ from reddit_mental_health.tracking import (
 
 
 def test_construir_run_id_normaliza_componentes() -> None:
-    """Genera identificadores estables y legibles para corridas."""
+    """
+    Verifica que los identificadores de corrida sean estables y legibles.
+    """
 
     run_id = construir_run_id(
         "Phase 2B Implementation",
@@ -34,7 +38,9 @@ def test_construir_run_id_normaliza_componentes() -> None:
 
 
 def test_actualizar_resumen_aplana_metadata_y_metricas(tmp_path) -> None:
-    """Reconstruye summary.csv/json a partir de una corrida guardada."""
+    """
+    Verifica que el resumen se reconstruya desde una corrida guardada.
+    """
 
     paths = construir_rutas_corrida(tmp_path, "run-001")
     metadata = RunMetadata(

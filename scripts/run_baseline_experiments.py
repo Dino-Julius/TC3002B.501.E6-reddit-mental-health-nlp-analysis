@@ -1,4 +1,6 @@
-"""Ejecuta corridas baseline con tracking local de artefactos."""
+"""
+Este módulo ejecuta corridas baseline con tracking local de artefactos.
+"""
 
 from __future__ import annotations
 
@@ -46,13 +48,17 @@ from reddit_mental_health.tracking import (
 
 
 def _choices_con_all(valores: tuple[str, ...]) -> tuple[str, ...]:
-    """Agrega la opción all a una lista estable de valores CLI."""
+    """
+    Agrega la opción all a una lista estable de valores CLI.
+    """
 
     return (*valores, "all")
 
 
 def parse_args() -> argparse.Namespace:
-    """Lee argumentos CLI para una o varias corridas con tracking."""
+    """
+    Lee argumentos CLI para una o varias corridas con tracking.
+    """
 
     config = BaselineConfig()
     default_output = (
@@ -99,7 +105,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def _resolver_valores(nombre: str, disponibles: tuple[str, ...]) -> tuple[str, ...]:
-    """Expande all a todos los valores disponibles."""
+    """
+    Expande all a todos los valores disponibles.
+    """
 
     if nombre == "all":
         return disponibles
@@ -109,7 +117,9 @@ def _resolver_valores(nombre: str, disponibles: tuple[str, ...]) -> tuple[str, .
 def resolver_matriz_experimental(
     args: argparse.Namespace,
 ) -> list[tuple[str, str]]:
-    """Construye la matriz clasificador/features solicitada por CLI."""
+    """
+    Construye la matriz clasificador/features solicitada por CLI.
+    """
 
     clasificadores = _resolver_valores(
         args.classifier_name,
@@ -123,7 +133,9 @@ def resolver_matriz_experimental(
 
 
 def imprimir_catalogo_experimentos() -> None:
-    """Imprime el catálogo experimental disponible."""
+    """
+    Imprime el catálogo experimental disponible.
+    """
 
     print("Clasificadores disponibles:")
     for spec in CLASSIFIER_SPECS.values():
@@ -148,7 +160,9 @@ def _crear_metadata(
     duration_seconds: float | None,
     error: str | None = None,
 ) -> RunMetadata:
-    """Construye metadata consistente para éxito o falla."""
+    """
+    Construye metadata consistente para éxito o falla.
+    """
 
     paths = construir_rutas_corrida(args.output_dir, run_id)
     completed_at = timestamp_utc() if status != "running" else None
@@ -177,7 +191,9 @@ def ejecutar_corrida(
     classifier_name: str,
     feature_config_name: str,
 ) -> RunMetadata:
-    """Entrena una combinación experimental y guarda artefactos por run_id."""
+    """
+    Entrena una combinación experimental y guarda artefactos por run_id.
+    """
 
     started_at = timestamp_utc()
     run_id = args.run_id or construir_run_id(
@@ -274,7 +290,9 @@ def ejecutar_corrida(
 
 
 def main() -> None:
-    """Ejecuta una matriz experimental y reporta sus rutas principales."""
+    """
+    Ejecuta una matriz experimental y reporta sus rutas principales.
+    """
 
     args = parse_args()
     if args.list_experiments:

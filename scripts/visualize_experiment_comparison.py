@@ -1,4 +1,6 @@
-"""Genera un dashboard comparativo para experimentos Fase 2B."""
+"""
+Este módulo genera un dashboard comparativo para experimentos Fase 2B.
+"""
 
 from __future__ import annotations
 
@@ -49,7 +51,9 @@ METRIC_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
-    """Lee argumentos CLI para el dashboard comparativo."""
+    """
+    Lee argumentos CLI para el dashboard comparativo.
+    """
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--summary", type=Path, default=DEFAULT_SUMMARY)
@@ -70,7 +74,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def _cargar_pyplot() -> Any:
-    """Carga matplotlib con backend no interactivo."""
+    """
+    Carga matplotlib con backend no interactivo.
+    """
 
     try:
         import matplotlib
@@ -87,7 +93,9 @@ def _cargar_pyplot() -> Any:
 
 
 def _guardar_figura(fig: Any, path: Path, plt: Any) -> Path:
-    """Guarda una figura de reporte y cierra el objeto."""
+    """
+    Guarda una figura de reporte y cierra el objeto.
+    """
 
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=FIGURE_DPI, bbox_inches="tight")
@@ -97,7 +105,9 @@ def _guardar_figura(fig: Any, path: Path, plt: Any) -> Path:
 
 
 def _formatear_metrica(valor: object) -> str:
-    """Da formato compacto a métricas numéricas."""
+    """
+    Da formato compacto a métricas numéricas.
+    """
 
     if valor is None or pd.isna(valor):
         return "N/D"
@@ -108,13 +118,17 @@ def _formatear_metrica(valor: object) -> str:
 
 
 def _ruta_relativa(path: Path, dashboard_out: Path) -> str:
-    """Convierte una ruta local a ruta relativa para HTML estático."""
+    """
+    Convierte una ruta local a ruta relativa para HTML estático.
+    """
 
     return html.escape(os.path.relpath(path, start=dashboard_out.parent))
 
 
 def cargar_resumen(summary_path: Path) -> pd.DataFrame:
-    """Carga y valida el resumen agregado de experimentos."""
+    """
+    Carga y valida el resumen agregado de experimentos.
+    """
 
     if not summary_path.exists():
         raise SystemExit(f"No se encontró el resumen de experimentos: {summary_path}")
@@ -137,7 +151,9 @@ def cargar_resumen(summary_path: Path) -> pd.DataFrame:
 
 
 def preparar_corridas_comparables(resumen: pd.DataFrame) -> pd.DataFrame:
-    """Filtra corridas completas y conserva la última por combinación."""
+    """
+    Filtra corridas completas y conserva la última por combinación.
+    """
 
     completas = resumen.loc[resumen["status"] == "completed"].copy()
     completas = completas.dropna(subset=["protocol_auc"])
@@ -155,7 +171,9 @@ def preparar_corridas_comparables(resumen: pd.DataFrame) -> pd.DataFrame:
 
 
 def _etiqueta_corrida(row: pd.Series) -> str:
-    """Construye una etiqueta corta para rankings."""
+    """
+    Construye una etiqueta corta para rankings.
+    """
 
     return f"{row['classifier_name']} | {row['feature_config_name']}"
 
@@ -166,7 +184,9 @@ def graficar_ranking_protocol_auc(
     plt: Any,
     top_n: int,
 ) -> Path:
-    """Grafica el ranking de corridas por AUC protocolo."""
+    """
+    Grafica el ranking de corridas por AUC protocolo.
+    """
 
     datos = corridas.head(top_n).iloc[::-1]
     etiquetas = [_etiqueta_corrida(row) for _, row in datos.iterrows()]
@@ -195,7 +215,9 @@ def graficar_heatmap_protocol_auc(
     output_dir: Path,
     plt: Any,
 ) -> Path:
-    """Grafica una matriz clasificador/features con AUC protocolo."""
+    """
+    Grafica una matriz clasificador/features con AUC protocolo.
+    """
 
     tabla = corridas.pivot_table(
         index="classifier_name",
@@ -240,7 +262,9 @@ def graficar_metricas_top(
     plt: Any,
     top_n: int,
 ) -> Path:
-    """Compara métricas principales para las mejores corridas."""
+    """
+    Compara métricas principales para las mejores corridas.
+    """
 
     datos = corridas.head(min(top_n, 10)).copy()
     etiquetas = [_etiqueta_corrida(row) for _, row in datos.iterrows()]
@@ -276,7 +300,9 @@ def graficar_roc_vs_protocol_auc(
     output_dir: Path,
     plt: Any,
 ) -> Path:
-    """Compara ROC AUC de scores contra AUC protocolo de predicciones finales."""
+    """
+    Compara ROC AUC de scores contra AUC protocolo de predicciones finales.
+    """
 
     fig, ax = plt.subplots(figsize=(6.4, 5.2))
     for classifier_name, grupo in corridas.groupby("classifier_name"):
@@ -302,7 +328,9 @@ def generar_figuras(
     output_dir: Path,
     top_n: int,
 ) -> dict[str, Path]:
-    """Genera todas las figuras comparativas disponibles."""
+    """
+    Genera todas las figuras comparativas disponibles.
+    """
 
     output_dir.mkdir(parents=True, exist_ok=True)
     plt = _cargar_pyplot()
@@ -334,7 +362,9 @@ def generar_figuras(
 
 
 def _render_metric_card(label: str, value: object) -> str:
-    """Renderiza una tarjeta de métrica para el dashboard."""
+    """
+    Renderiza una tarjeta de métrica para el dashboard.
+    """
 
     return f"""
       <article class="card metric-card">
@@ -345,7 +375,9 @@ def _render_metric_card(label: str, value: object) -> str:
 
 
 def _render_top_table(corridas: pd.DataFrame, top_n: int) -> str:
-    """Renderiza la tabla de mejores corridas."""
+    """
+    Renderiza la tabla de mejores corridas.
+    """
 
     filas = []
     for indice, (_, row) in enumerate(corridas.head(top_n).iterrows(), start=1):
@@ -372,7 +404,9 @@ def generar_dashboard(
     summary_path: Path,
     top_n: int,
 ) -> Path:
-    """Genera el HTML estático del comparativo experimental."""
+    """
+    Genera el HTML estático del comparativo experimental.
+    """
 
     dashboard_out.parent.mkdir(parents=True, exist_ok=True)
     mejor = corridas.iloc[0]
@@ -601,7 +635,9 @@ def generar_dashboard(
 
 
 def main() -> None:
-    """Genera figuras y dashboard comparativo de experimentos."""
+    """
+    Genera figuras y dashboard comparativo de experimentos.
+    """
 
     args = parse_args()
     resumen = cargar_resumen(args.summary)

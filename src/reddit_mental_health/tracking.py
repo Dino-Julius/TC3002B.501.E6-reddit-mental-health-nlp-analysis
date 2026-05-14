@@ -1,4 +1,6 @@
-"""Tracking local y ligero para corridas experimentales."""
+"""
+Este módulo gestiona tracking local y ligero de corridas experimentales.
+"""
 
 from __future__ import annotations
 
@@ -38,7 +40,9 @@ SUMMARY_COLUMNS = [
 
 @dataclass(frozen=True)
 class RunPaths:
-    """Rutas estándar de artefactos para una corrida."""
+    """
+    Define rutas estándar de artefactos para una corrida.
+    """
 
     run_dir: Path
     metadata_path: Path
@@ -50,7 +54,9 @@ class RunPaths:
 
 @dataclass(frozen=True)
 class RunMetadata:
-    """Metadata mínima para reproducir y comparar una corrida."""
+    """
+    Define metadata mínima para reproducir y comparar una corrida.
+    """
 
     run_id: str
     experiment_name: str
@@ -71,13 +77,17 @@ class RunMetadata:
 
 
 def timestamp_utc() -> str:
-    """Genera un timestamp UTC compacto y serializable."""
+    """
+    Genera un timestamp UTC compacto y serializable.
+    """
 
     return datetime.now(tz=UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def slugify(value: object) -> str:
-    """Normaliza texto para usarlo de forma segura en nombres de archivos."""
+    """
+    Normaliza texto para usarlo de forma segura en nombres de archivos.
+    """
 
     slug = re.sub(r"[^a-z0-9]+", "-", str(value).lower()).strip("-")
     return slug or "sin-nombre"
@@ -89,7 +99,9 @@ def construir_run_id(
     feature_config_name: str,
     started_at: str | None = None,
 ) -> str:
-    """Construye un identificador legible para una corrida."""
+    """
+    Construye un identificador legible para una corrida.
+    """
 
     timestamp = started_at or timestamp_utc()
     timestamp_slug = timestamp.replace("-", "").replace(":", "").replace("+", "")
@@ -104,7 +116,9 @@ def construir_run_id(
 
 
 def construir_rutas_corrida(output_dir: str | Path, run_id: str) -> RunPaths:
-    """Devuelve las rutas estándar para una corrida dentro del directorio base."""
+    """
+    Devuelve las rutas estándar para una corrida dentro del directorio base.
+    """
 
     run_dir = Path(output_dir) / run_id
     return RunPaths(
@@ -118,7 +132,9 @@ def construir_rutas_corrida(output_dir: str | Path, run_id: str) -> RunPaths:
 
 
 def guardar_json(payload: dict[str, Any], path: str | Path) -> None:
-    """Guarda un diccionario como JSON legible."""
+    """
+    Guarda un diccionario como JSON legible.
+    """
 
     salida = Path(path)
     salida.parent.mkdir(parents=True, exist_ok=True)
@@ -129,13 +145,17 @@ def guardar_json(payload: dict[str, Any], path: str | Path) -> None:
 
 
 def guardar_metadata(metadata: RunMetadata, path: str | Path) -> None:
-    """Persiste la metadata de una corrida."""
+    """
+    Persiste la metadata de una corrida.
+    """
 
     guardar_json(asdict(metadata), path)
 
 
 def _leer_json(path: Path) -> dict[str, Any]:
-    """Carga un JSON si existe; si no, regresa un diccionario vacío."""
+    """
+    Carga un JSON si existe; si no, regresa un diccionario vacío.
+    """
 
     if not path.exists():
         return {}
@@ -146,7 +166,9 @@ def construir_registro_resumen(
     metadata: dict[str, Any],
     metrics: dict[str, Any],
 ) -> dict[str, Any]:
-    """Aplana metadata y métricas para el resumen tabular."""
+    """
+    Aplana metadata y métricas para el resumen tabular.
+    """
 
     matriz = metrics.get("confusion_matrix")
     if not isinstance(matriz, dict):
@@ -178,7 +200,9 @@ def construir_registro_resumen(
 
 
 def actualizar_resumen(output_dir: str | Path) -> list[dict[str, Any]]:
-    """Reconstruye summary.csv y summary.json a partir de corridas guardadas."""
+    """
+    Reconstruye summary.csv y summary.json a partir de corridas guardadas.
+    """
 
     base_dir = Path(output_dir)
     registros = []

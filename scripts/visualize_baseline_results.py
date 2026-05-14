@@ -1,4 +1,6 @@
-"""Genera visualizaciones y dashboard estático del baseline Fase 2B."""
+"""
+Este módulo genera visualizaciones y dashboard estático del baseline.
+"""
 
 from __future__ import annotations
 
@@ -23,8 +25,10 @@ DEFAULT_PREDICTIONS = (
 DEFAULT_INTERPRETABILITY = (
     PROJECT_ROOT / "data" / "processed" / "baseline_interpretability.json"
 )
-DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "reports" / "phase-2b-baseline" / "assets"
-DEFAULT_DASHBOARD = PROJECT_ROOT / "reports" / "phase-2b-baseline" / "dashboard.html"
+DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "reports" / "phase-2b-implementation" / "assets"
+DEFAULT_DASHBOARD = (
+    PROJECT_ROOT / "reports" / "phase-2b-implementation" / "dashboard.html"
+)
 
 LABELS = {0: "no", 1: "yes"}
 FIGURE_DPI = 160
@@ -35,7 +39,9 @@ ETHICAL_NOTE = (
 
 
 def parse_args() -> argparse.Namespace:
-    """Lee argumentos CLI para construir figuras y dashboard local."""
+    """
+    Lee argumentos CLI para construir figuras y dashboard local.
+    """
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--metrics", type=Path, default=DEFAULT_METRICS)
@@ -52,20 +58,26 @@ def parse_args() -> argparse.Namespace:
 
 
 def _validar_archivo_requerido(path: Path, descripcion: str) -> None:
-    """Detiene la ejecución si falta un insumo obligatorio."""
+    """
+    Detiene la ejecución si falta un insumo obligatorio.
+    """
 
     if not path.exists():
         raise SystemExit(f"No se encontró {descripcion}: {path}")
 
 
 def _leer_json(path: Path) -> dict[str, object]:
-    """Carga un archivo JSON como diccionario."""
+    """
+    Carga un archivo JSON como diccionario.
+    """
 
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _leer_interpretabilidad(path: Path) -> dict[str, object] | None:
-    """Carga la interpretabilidad si existe; si no, continúa sin fallar."""
+    """
+    Carga la interpretabilidad si existe; si no, continúa sin fallar.
+    """
 
     if not path.exists():
         print(f"Reporte interpretativo opcional no encontrado; se omite: {path}")
@@ -74,7 +86,9 @@ def _leer_interpretabilidad(path: Path) -> dict[str, object] | None:
 
 
 def _cargar_pyplot() -> Any:
-    """Carga matplotlib con backend no interactivo solo cuando se generan figuras."""
+    """
+    Carga matplotlib con backend no interactivo para generar figuras.
+    """
 
     try:
         import matplotlib
@@ -91,7 +105,9 @@ def _cargar_pyplot() -> Any:
 
 
 def _guardar_figura(fig: Any, path: Path, plt: Any) -> Path:
-    """Guarda una figura con parámetros consistentes para reporte."""
+    """
+    Guarda una figura con parámetros consistentes para reporte.
+    """
 
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=FIGURE_DPI, bbox_inches="tight")
@@ -101,7 +117,9 @@ def _guardar_figura(fig: Any, path: Path, plt: Any) -> Path:
 
 
 def _serie_binaria(serie: pd.Series) -> pd.Series:
-    """Normaliza etiquetas binarias numéricas o textuales a 0/1."""
+    """
+    Normaliza etiquetas binarias numéricas o textuales a 0/1.
+    """
 
     numerica = pd.to_numeric(serie, errors="coerce")
     textual = serie.map(
@@ -112,7 +130,9 @@ def _serie_binaria(serie: pd.Series) -> pd.Series:
 
 
 def _formatear_metrica(valor: object) -> str:
-    """Da formato corto a métricas numéricas del dashboard."""
+    """
+    Da formato corto a métricas numéricas del dashboard.
+    """
 
     if valor is None:
         return "N/D"
@@ -123,7 +143,9 @@ def _formatear_metrica(valor: object) -> str:
 
 
 def _obtener_matriz_confusion(metricas: dict[str, object]) -> np.ndarray:
-    """Extrae la matriz de confusión en orden no/sí desde las métricas."""
+    """
+    Extrae la matriz de confusión en orden no/sí desde las métricas.
+    """
 
     matriz = metricas.get("confusion_matrix")
     if not isinstance(matriz, dict):
@@ -155,7 +177,9 @@ def graficar_matriz_confusion(
     output_dir: Path,
     plt: Any,
 ) -> Path:
-    """Genera la figura de matriz de confusión del baseline."""
+    """
+    Genera la figura de matriz de confusión del baseline.
+    """
 
     matriz = _obtener_matriz_confusion(metricas)
     fig, ax = plt.subplots(figsize=(4.8, 4.2))
@@ -191,7 +215,9 @@ def graficar_curva_roc(
     output_dir: Path,
     plt: Any,
 ) -> Path | None:
-    """Genera la curva ROC cuando existen etiquetas y puntajes suficientes."""
+    """
+    Genera la curva ROC cuando existen etiquetas y puntajes suficientes.
+    """
 
     if "y_true" not in predicciones.columns or "score" not in predicciones.columns:
         print("Se omite roc_curve.png: faltan columnas y_true o score.")
@@ -229,7 +255,9 @@ def graficar_distribucion_scores(
     output_dir: Path,
     plt: Any,
 ) -> Path | None:
-    """Genera la distribución de puntajes, agrupada por etiqueta si existe."""
+    """
+    Genera la distribución de puntajes agrupada por etiqueta si existe.
+    """
 
     if "score" not in predicciones.columns:
         print("Se omite score_distribution.png: falta la columna score.")
@@ -268,7 +296,9 @@ def graficar_distribucion_predicciones(
     output_dir: Path,
     plt: Any,
 ) -> Path | None:
-    """Genera el conteo de clases predichas si y_pred está disponible."""
+    """
+    Genera el conteo de clases predichas si y_pred está disponible.
+    """
 
     if "y_pred" not in predicciones.columns:
         print("Se omite prediction_distribution.png: falta la columna y_pred.")
@@ -293,7 +323,9 @@ def generar_figuras(
     predicciones: pd.DataFrame,
     output_dir: Path,
 ) -> dict[str, Path]:
-    """Construye todas las visualizaciones disponibles del baseline."""
+    """
+    Construye todas las visualizaciones disponibles del baseline.
+    """
 
     output_dir.mkdir(parents=True, exist_ok=True)
     plt = _cargar_pyplot()
@@ -321,14 +353,18 @@ def generar_figuras(
 
 
 def _ruta_relativa(path: Path, dashboard_out: Path) -> str:
-    """Convierte una ruta de figura a una ruta relativa para HTML local."""
+    """
+    Convierte una ruta de figura a una ruta relativa para HTML local.
+    """
 
     relativa = os.path.relpath(path, start=dashboard_out.parent)
     return Path(relativa).as_posix()
 
 
 def _resumen_matriz_html(metricas: dict[str, object]) -> str:
-    """Construye el resumen HTML de TN, FP, FN y TP."""
+    """
+    Construye el resumen HTML de TN, FP, FN y TP.
+    """
 
     matriz = metricas.get("confusion_matrix")
     if not isinstance(matriz, dict):
@@ -347,7 +383,9 @@ def _resumen_matriz_html(metricas: dict[str, object]) -> str:
 
 
 def _terminos_html(interpretabilidad: dict[str, object] | None) -> str:
-    """Genera una sección breve con términos positivos y negativos."""
+    """
+    Genera una sección breve con términos positivos y negativos.
+    """
 
     if not interpretabilidad:
         return ""
@@ -399,7 +437,9 @@ def _figura_html(
     figuras: dict[str, Path],
     dashboard_out: Path,
 ) -> str:
-    """Renderiza una tarjeta de figura o un aviso si fue omitida."""
+    """
+    Renderiza una tarjeta de figura o un aviso si fue omitida.
+    """
 
     path = figuras.get(nombre)
     if path is None:
@@ -424,7 +464,9 @@ def generar_dashboard(
     interpretabilidad: dict[str, object] | None,
     dashboard_out: Path,
 ) -> Path:
-    """Escribe un dashboard HTML estático con métricas y figuras."""
+    """
+    Escribe un dashboard HTML estático con métricas y figuras.
+    """
 
     dashboard_out.parent.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
@@ -622,7 +664,9 @@ def generar_dashboard(
 
 
 def main() -> None:
-    """Coordina la lectura de resultados y la generación de reportes."""
+    """
+    Coordina la lectura de resultados y la generación de reportes.
+    """
 
     args = parse_args()
     _validar_archivo_requerido(args.metrics, "el archivo de métricas")

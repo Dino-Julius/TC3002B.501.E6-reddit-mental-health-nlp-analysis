@@ -1,4 +1,6 @@
-"""Modelo baseline lineal para detección binaria de suicidalidad."""
+"""
+Este módulo entrena y usa modelos baseline para clasificación binaria.
+"""
 
 from __future__ import annotations
 
@@ -20,7 +22,9 @@ from reddit_mental_health.features import ajustar_transformar_tfidf, transformar
 
 @dataclass
 class BaselineModel:
-    """Artefacto completo del baseline: configuración, TF-IDF y clasificador."""
+    """
+    Representa el artefacto completo del baseline entrenado.
+    """
 
     config: BaselineConfig
     vectorizer: object
@@ -28,7 +32,9 @@ class BaselineModel:
 
 
 def construir_clasificador(config: BaselineConfig) -> ClassifierMixin:
-    """Crea el clasificador solicitado por la configuración experimental."""
+    """
+    Crea el clasificador solicitado por la configuración experimental.
+    """
 
     if config.classifier_name == "logistic_regression":
         return LogisticRegression(
@@ -66,7 +72,9 @@ def _score_clase_positiva(
     x: object,
     positive_value: int,
 ) -> np.ndarray:
-    """Obtiene un puntaje continuo para la clase positiva."""
+    """
+    Obtiene un puntaje continuo para la clase positiva.
+    """
 
     clases = list(clasificador.classes_)
     indice_positivo = clases.index(positive_value)
@@ -84,7 +92,9 @@ def entrenar_baseline(
     y_entrenamiento: Iterable[int],
     config: BaselineConfig,
 ) -> BaselineModel:
-    """Entrena TF-IDF + el clasificador configurado sobre entrenamiento."""
+    """
+    Entrena TF-IDF y el clasificador configurado sobre entrenamiento.
+    """
 
     vectorizador, x_entrenamiento = ajustar_transformar_tfidf(
         textos_entrenamiento,
@@ -107,7 +117,9 @@ def predecir_baseline(
     modelo: BaselineModel,
     textos: Iterable[str],
 ) -> tuple[list[int], list[float]]:
-    """Genera predicciones binarias y puntajes continuos para ROC AUC."""
+    """
+    Genera predicciones binarias y puntajes continuos para ROC AUC.
+    """
 
     x = transformar_tfidf(modelo.vectorizer, textos)
     y_pred = modelo.classifier.predict(x).astype(int)
@@ -121,7 +133,9 @@ def predecir_baseline(
 
 
 def guardar_modelo(modelo: BaselineModel, path: str | Path) -> None:
-    """Persiste el artefacto entrenado para evaluación posterior."""
+    """
+    Persiste el artefacto entrenado para evaluación posterior.
+    """
 
     salida = Path(path)
     ensure_parent_dir(salida)
@@ -129,7 +143,9 @@ def guardar_modelo(modelo: BaselineModel, path: str | Path) -> None:
 
 
 def cargar_modelo(path: str | Path) -> BaselineModel:
-    """Carga un baseline entrenado desde disco."""
+    """
+    Carga un baseline entrenado desde disco.
+    """
 
     return joblib.load(path)
 

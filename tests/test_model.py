@@ -1,4 +1,6 @@
-"""Pruebas de construcción y predicción con clasificadores baseline."""
+"""
+Este módulo prueba construcción y predicción con clasificadores baseline.
+"""
 
 from __future__ import annotations
 
@@ -17,7 +19,9 @@ from reddit_mental_health.model import (
 def test_clasificadores_baseline_entrenan_y_generan_scores(
     classifier_name: str,
 ) -> None:
-    """Cada clasificador del catálogo produce predicciones y puntajes."""
+    """
+    Verifica que cada clasificador produzca predicciones y puntajes.
+    """
 
     config = BaselineConfig(
         classifier_name=classifier_name,
@@ -47,7 +51,9 @@ def test_clasificadores_baseline_entrenan_y_generan_scores(
 
 
 def test_construir_clasificador_rechaza_nombre_no_soportado() -> None:
-    """Reporta nombres inválidos antes de entrenar."""
+    """
+    Verifica que los nombres inválidos fallen antes de entrenar.
+    """
 
     config = BaselineConfig(classifier_name="random_forest")
 

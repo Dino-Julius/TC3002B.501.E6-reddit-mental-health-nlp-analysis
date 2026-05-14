@@ -1,4 +1,6 @@
-"""Configuración central del baseline de PLN para Reddit."""
+"""
+Este módulo centraliza la configuración reproducible del pipeline.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +13,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 @dataclass(frozen=True)
 class BaselineConfig:
-    """Parámetros reproducibles para el pipeline conceptual.
+    """
+    Define parámetros reproducibles para el pipeline conceptual.
 
     La configuración concentra rutas, nombres de columnas y valores del
     experimento para que los módulos de datos, texto, modelo y evaluación no
@@ -65,7 +68,9 @@ class BaselineConfig:
 
 
 def ensure_parent_dir(path: Path) -> None:
-    """Crea el directorio padre de una salida si todavía no existe."""
+    """
+    Crea el directorio padre de una salida si todavía no existe.
+    """
 
     path.parent.mkdir(parents=True, exist_ok=True)
 

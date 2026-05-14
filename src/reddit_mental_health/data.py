@@ -1,4 +1,6 @@
-"""Carga, validación y preparación tabular de publicaciones de Reddit."""
+"""
+Este módulo carga, valida y prepara publicaciones tabulares de Reddit.
+"""
 
 from __future__ import annotations
 
@@ -10,7 +12,9 @@ from reddit_mental_health.config import BaselineConfig
 
 
 def columnas_requeridas(config: BaselineConfig, require_label: bool = True) -> list[str]:
-    """Devuelve las columnas mínimas esperadas por el diseño conceptual."""
+    """
+    Devuelve las columnas mínimas esperadas por el diseño conceptual.
+    """
 
     columnas = [
         config.user_column,
@@ -28,7 +32,9 @@ def validar_columnas(
     config: BaselineConfig,
     require_label: bool = True,
 ) -> None:
-    """Valida que el CSV contenga las columnas necesarias para el pipeline."""
+    """
+    Valida que el CSV contenga las columnas necesarias para el pipeline.
+    """
 
     faltantes = [
         columna
@@ -43,7 +49,9 @@ def validar_columnas(
 
 
 def normalizar_etiquetas(frame: pd.DataFrame, config: BaselineConfig) -> pd.DataFrame:
-    """Convierte las etiquetas `yes`/`no` a valores binarios reproducibles."""
+    """
+    Convierte las etiquetas yes/no a valores binarios reproducibles.
+    """
 
     if config.label_column not in frame.columns:
         return frame
@@ -78,7 +86,9 @@ def cargar_publicaciones_csv(
     config: BaselineConfig,
     require_label: bool = True,
 ) -> pd.DataFrame:
-    """Carga un CSV de publicaciones y deja las etiquetas listas para modelar."""
+    """
+    Carga un CSV de publicaciones y deja las etiquetas listas para modelar.
+    """
 
     frame = pd.read_csv(path)
     validar_columnas(frame, config, require_label=require_label)
@@ -99,7 +109,9 @@ def construir_salida_predicciones(
     split: str | None = None,
     include_y_true: bool = True,
 ) -> pd.DataFrame:
-    """Construye la tabla de salida trazable definida en el diseño."""
+    """
+    Construye la tabla de salida trazable definida en el diseño.
+    """
 
     columnas = [config.text_id_column, config.user_column]
     salida = frame[columnas].copy()

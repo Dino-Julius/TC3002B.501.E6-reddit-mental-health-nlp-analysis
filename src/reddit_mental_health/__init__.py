@@ -1,4 +1,6 @@
-"""Pipeline baseline para análisis experimental de suicidalidad en Reddit."""
+"""
+Este módulo expone el paquete del pipeline experimental para Reddit.
+"""
 
 from reddit_mental_health.config import BaselineConfig
 from reddit_mental_health.model import BaselineModel

@@ -1,4 +1,6 @@
-"""Extracción de características TF-IDF para el baseline."""
+"""
+Este módulo extrae características TF-IDF para el pipeline baseline.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +13,9 @@ from reddit_mental_health.config import BaselineConfig
 
 
 def construir_vectorizador(config: BaselineConfig) -> TfidfVectorizer:
-    """Crea el vectorizador TF-IDF definido por la configuración experimental."""
+    """
+    Crea el vectorizador TF-IDF definido por la configuración experimental.
+    """
 
     return TfidfVectorizer(
         analyzer=config.analyzer,
@@ -27,7 +31,9 @@ def ajustar_transformar_tfidf(
     textos: Iterable[str],
     config: BaselineConfig,
 ) -> tuple[TfidfVectorizer, csr_matrix]:
-    """Ajusta el vectorizador solo con entrenamiento y regresa la matriz TF-IDF."""
+    """
+    Ajusta el vectorizador solo con entrenamiento y regresa la matriz TF-IDF.
+    """
 
     vectorizador = construir_vectorizador(config)
     matriz = vectorizador.fit_transform(textos)
@@ -38,7 +44,9 @@ def transformar_tfidf(
     vectorizador: TfidfVectorizer,
     textos: Iterable[str],
 ) -> csr_matrix:
-    """Aplica un vectorizador ya ajustado a validación o prueba."""
+    """
+    Aplica un vectorizador ya ajustado a validación o prueba.
+    """
 
     return vectorizador.transform(textos)
 

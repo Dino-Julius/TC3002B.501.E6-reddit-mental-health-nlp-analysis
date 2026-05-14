@@ -1,4 +1,6 @@
-"""Métricas de evaluación para el baseline binario."""
+"""
+Este módulo calcula métricas de evaluación para el baseline binario.
+"""
 
 from __future__ import annotations
 
@@ -23,7 +25,9 @@ def calcular_metricas(
     score: list[float] | np.ndarray,
     config: BaselineConfig,
 ) -> dict[str, object]:
-    """Calcula ROC AUC y métricas complementarias del protocolo."""
+    """
+    Calcula ROC AUC y métricas complementarias del protocolo.
+    """
 
     y_real = np.asarray(y_true, dtype=int)
     y_estimado = np.asarray(y_pred, dtype=int)
@@ -40,8 +44,16 @@ def calcular_metricas(
     )
     tn, fp, fn, tp = matriz.ravel()
 
+    # El protocolo de Fase 2B calcula AUC desde TPR/FPR de la predicción final.
+    true_positive_rate = float(tp / (tp + fn)) if (tp + fn) else 0.0
+    false_positive_rate = float(fp / (fp + tn)) if (fp + tn) else 0.0
+    protocol_auc = float((1 + true_positive_rate - false_positive_rate) / 2)
+
     return {
         "roc_auc": roc_auc,
+        "true_positive_rate": true_positive_rate,
+        "false_positive_rate": false_positive_rate,
+        "protocol_auc": protocol_auc,
         "recall": float(recall_score(y_real, y_estimado, zero_division=0)),
         "precision": float(precision_score(y_real, y_estimado, zero_division=0)),
         "f1": float(f1_score(y_real, y_estimado, zero_division=0)),
@@ -56,7 +68,9 @@ def calcular_metricas(
 
 
 def guardar_metricas(metricas: dict[str, object], path: str | Path) -> None:
-    """Guarda las métricas en JSON legible y reproducible."""
+    """
+    Guarda las métricas en JSON legible y reproducible.
+    """
 
     salida = Path(path)
     ensure_parent_dir(salida)

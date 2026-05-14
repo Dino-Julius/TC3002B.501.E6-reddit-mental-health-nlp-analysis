@@ -1,4 +1,6 @@
-"""Pruebas del catálogo de experimentos baseline."""
+"""
+Este módulo prueba el catálogo de experimentos baseline.
+"""
 
 from __future__ import annotations
 
@@ -13,7 +15,9 @@ from reddit_mental_health.experiments import (
 
 
 def test_catalogo_incluye_matriz_experimental_esperada() -> None:
-    """Expone cinco clasificadores y cuatro configuraciones de features."""
+    """
+    Verifica que el catálogo exponga la matriz experimental esperada.
+    """
 
     assert listar_clasificadores() == (
         "logistic_regression",
@@ -31,7 +35,9 @@ def test_catalogo_incluye_matriz_experimental_esperada() -> None:
 
 
 def test_construir_config_experimento_aplica_features_y_clasificador() -> None:
-    """Crea una configuración concreta sin mutar la base."""
+    """
+    Verifica que una configuración concreta no mute la configuración base.
+    """
 
     base_config = BaselineConfig()
     config = construir_config_experimento(
@@ -48,7 +54,9 @@ def test_construir_config_experimento_aplica_features_y_clasificador() -> None:
 
 
 def test_construir_config_experimento_rechaza_nombres_invalidos() -> None:
-    """Falla claramente cuando el usuario pide una opción inexistente."""
+    """
+    Verifica errores claros para opciones experimentales inexistentes.
+    """
 
     with pytest.raises(ValueError, match="Clasificador desconocido"):
         construir_config_experimento(

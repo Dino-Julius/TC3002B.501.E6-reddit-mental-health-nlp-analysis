@@ -1,4 +1,6 @@
-"""Evalúa un baseline entrenado sobre un CSV etiquetado o no etiquetado."""
+"""
+Este módulo evalúa un baseline entrenado sobre datos nuevos.
+"""
 
 from __future__ import annotations
 
@@ -26,7 +28,9 @@ from reddit_mental_health.preprocessing import (
 
 
 def parse_args() -> argparse.Namespace:
-    """Lee argumentos CLI para evaluar un modelo persistido."""
+    """
+    Lee argumentos CLI para evaluar un modelo persistido.
+    """
 
     config = BaselineConfig()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -54,7 +58,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    """Genera predicciones y métricas si el CSV incluye etiquetas reales."""
+    """
+    Genera predicciones y métricas si el CSV incluye etiquetas reales.
+    """
 
     args = parse_args()
     config = BaselineConfig(

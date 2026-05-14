@@ -1,4 +1,6 @@
-"""Interpretabilidad básica basada en pesos o probabilidades del clasificador."""
+"""
+Este módulo construye reportes básicos de interpretabilidad experimental.
+"""
 
 from __future__ import annotations
 
@@ -22,7 +24,9 @@ def extraer_pesos_caracteristicas(
     modelo: BaselineModel,
     top_n: int = 25,
 ) -> dict[str, list[dict[str, float | str]]]:
-    """Obtiene n-gramas asociados a cada clase a partir de señales del modelo."""
+    """
+    Obtiene n-gramas asociados a cada clase a partir de señales del modelo.
+    """
 
     nombres = modelo.vectorizer.get_feature_names_out()
     clasificador = modelo.classifier
@@ -57,7 +61,9 @@ def extraer_pesos_caracteristicas(
 
 
 def _recortar_fragmento(texto: object, limite: int = 320) -> str:
-    """Recorta texto para reportes sin guardar publicaciones completas."""
+    """
+    Recorta texto para reportes sin guardar publicaciones completas.
+    """
 
     fragmento = "" if texto is None or pd.isna(texto) else str(texto)
     fragmento = " ".join(fragmento.split())
@@ -72,7 +78,9 @@ def _seleccionar_ejemplos(
     config: BaselineConfig,
     max_examples: int,
 ) -> list[dict[str, object]]:
-    """Selecciona casos trazables para análisis cualitativo posterior."""
+    """
+    Selecciona casos trazables para análisis cualitativo posterior.
+    """
 
     columnas = [
         config.text_id_column,
@@ -98,7 +106,9 @@ def construir_reporte_interpretabilidad(
     top_n: int = 25,
     max_examples: int = 5,
 ) -> dict[str, object]:
-    """Construye un reporte inicial con pesos y casos de error revisables."""
+    """
+    Construye un reporte inicial con pesos y casos de error revisables.
+    """
 
     reporte: dict[str, object] = {
         "nota_etica": NOTA_ETICA,
@@ -141,7 +151,9 @@ def guardar_reporte_interpretabilidad(
     reporte: dict[str, object],
     path: str | Path,
 ) -> None:
-    """Guarda el reporte interpretativo en JSON."""
+    """
+    Guarda el reporte interpretativo en JSON.
+    """
 
     salida = Path(path)
     ensure_parent_dir(salida)

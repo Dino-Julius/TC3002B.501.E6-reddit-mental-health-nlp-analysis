@@ -1,4 +1,6 @@
-"""Entrena el baseline TF-IDF + Regresión Logística."""
+"""
+Este módulo entrena el baseline principal de Fase 2B.
+"""
 
 from __future__ import annotations
 
@@ -31,7 +33,9 @@ from reddit_mental_health.splitting import separar_por_usuario
 
 
 def parse_args() -> argparse.Namespace:
-    """Lee argumentos CLI manteniendo defaults reproducibles."""
+    """
+    Lee argumentos CLI manteniendo defaults reproducibles.
+    """
 
     config = BaselineConfig()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -50,7 +54,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    """Ejecuta el entrenamiento, validación y guardado de artefactos."""
+    """
+    Ejecuta el entrenamiento, validación y guardado de artefactos.
+    """
 
     args = parse_args()
     config = BaselineConfig(

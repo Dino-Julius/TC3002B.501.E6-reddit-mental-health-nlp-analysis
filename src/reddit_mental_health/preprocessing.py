@@ -1,4 +1,6 @@
-"""Preprocesamiento textual conservador para publicaciones de Reddit."""
+"""
+Este módulo aplica preprocesamiento textual conservador a publicaciones.
+"""
 
 from __future__ import annotations
 
@@ -16,7 +18,9 @@ WHITESPACE_RE = re.compile(r"\s+")
 
 
 def normalizar_texto(texto: object) -> str:
-    """Normaliza texto sin borrar señales lingüísticas potencialmente útiles."""
+    """
+    Normaliza texto sin borrar señales lingüísticas potencialmente útiles.
+    """
 
     if texto is None or pd.isna(texto):
         return ""
@@ -29,7 +33,9 @@ def normalizar_texto(texto: object) -> str:
 
 
 def combinar_title_text(frame: pd.DataFrame, config: BaselineConfig) -> pd.Series:
-    """Concatena `title` y `text`, que son la entrada textual del baseline."""
+    """
+    Concatena title y text como entrada textual del baseline.
+    """
 
     titulo = frame[config.title_column].fillna("").astype(str)
     cuerpo = frame[config.text_column].fillna("").astype(str)
@@ -40,13 +46,17 @@ def preprocesar_publicaciones(
     frame: pd.DataFrame,
     config: BaselineConfig,
 ) -> pd.Series:
-    """Aplica la normalización textual prevista por el diseño conceptual."""
+    """
+    Aplica la normalización textual prevista por el diseño conceptual.
+    """
 
     return combinar_title_text(frame, config).map(normalizar_texto)
 
 
 def preprocesar_textos(textos: Iterable[object]) -> list[str]:
-    """Normaliza una secuencia de textos ya combinados."""
+    """
+    Normaliza una secuencia de textos ya combinados.
+    """
 
     return [normalizar_texto(texto) for texto in textos]
 

@@ -1,4 +1,6 @@
-"""Catálogos reproducibles para comparar configuraciones de experimentos."""
+"""
+Este módulo define catálogos reproducibles para experimentos.
+"""
 
 from __future__ import annotations
 
@@ -9,7 +11,9 @@ from reddit_mental_health.config import BaselineConfig
 
 @dataclass(frozen=True)
 class FeatureConfigSpec:
-    """Define una variante de extracción TF-IDF."""
+    """
+    Define una variante de extracción TF-IDF.
+    """
 
     name: str
     analyzer: str
@@ -21,7 +25,9 @@ class FeatureConfigSpec:
 
 @dataclass(frozen=True)
 class ClassifierSpec:
-    """Define un clasificador disponible para la matriz experimental."""
+    """
+    Define un clasificador disponible para la matriz experimental.
+    """
 
     name: str
     description: str
@@ -88,13 +94,17 @@ FEATURE_CONFIG_SPECS: dict[str, FeatureConfigSpec] = {
 
 
 def listar_clasificadores() -> tuple[str, ...]:
-    """Lista los clasificadores disponibles en orden estable."""
+    """
+    Lista los clasificadores disponibles en orden estable.
+    """
 
     return tuple(CLASSIFIER_SPECS)
 
 
 def listar_configuraciones_features() -> tuple[str, ...]:
-    """Lista las configuraciones de características disponibles."""
+    """
+    Lista las configuraciones de características disponibles.
+    """
 
     return tuple(FEATURE_CONFIG_SPECS)
 
@@ -104,7 +114,9 @@ def construir_config_experimento(
     classifier_name: str,
     feature_config_name: str,
 ) -> BaselineConfig:
-    """Aplica una dupla clasificador/features sobre la configuración base."""
+    """
+    Aplica una dupla clasificador/features sobre la configuración base.
+    """
 
     if classifier_name not in CLASSIFIER_SPECS:
         disponibles = ", ".join(listar_clasificadores())
