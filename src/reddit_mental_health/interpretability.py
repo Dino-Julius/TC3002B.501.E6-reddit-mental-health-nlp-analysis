@@ -1,4 +1,4 @@
-"""Interpretabilidad básica basada en pesos del clasificador lineal."""
+"""Interpretabilidad básica basada en pesos o probabilidades del clasificador."""
 
 from __future__ import annotations
 
@@ -22,10 +22,24 @@ def extraer_pesos_caracteristicas(
     modelo: BaselineModel,
     top_n: int = 25,
 ) -> dict[str, list[dict[str, float | str]]]:
-    """Obtiene n-gramas asociados a cada clase a partir de coeficientes."""
+    """Obtiene n-gramas asociados a cada clase a partir de señales del modelo."""
 
     nombres = modelo.vectorizer.get_feature_names_out()
-    pesos = modelo.classifier.coef_[0]
+    clasificador = modelo.classifier
+    if hasattr(clasificador, "coef_"):
+        pesos = clasificador.coef_[0]
+    elif hasattr(clasificador, "feature_log_prob_"):
+        clases = list(clasificador.classes_)
+        indice_positivo = clases.index(modelo.config.positive_value)
+        indice_negativo = clases.index(modelo.config.negative_value)
+        pesos = (
+            clasificador.feature_log_prob_[indice_positivo]
+            - clasificador.feature_log_prob_[indice_negativo]
+        )
+    else:
+        raise ValueError(
+            "El clasificador no expone coeficientes ni probabilidades por feature.",
+        )
 
     indices_positivos = np.argsort(pesos)[-top_n:][::-1]
     indices_negativos = np.argsort(pesos)[:top_n]

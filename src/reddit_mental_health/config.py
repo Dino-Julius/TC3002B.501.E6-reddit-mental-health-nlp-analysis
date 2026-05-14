@@ -45,6 +45,10 @@ class BaselineConfig:
     validation_size: float = 0.2
     random_state: int = 42
 
+    classifier_name: str = "logistic_regression"
+    feature_config_name: str = "word_unigram_bigram"
+
+    analyzer: str = "word"
     max_features: int = 20_000
     min_df: int = 2
     max_df: float = 0.95
@@ -52,6 +56,11 @@ class BaselineConfig:
 
     logistic_c: float = 1.0
     logistic_max_iter: int = 1_000
+    linear_svm_c: float = 1.0
+    linear_svm_max_iter: int = 5_000
+    sgd_alpha: float = 0.0001
+    sgd_max_iter: int = 1_000
+    naive_bayes_alpha: float = 1.0
     class_weight: str | None = "balanced"
 
 

@@ -11,9 +11,10 @@ from reddit_mental_health.config import BaselineConfig
 
 
 def construir_vectorizador(config: BaselineConfig) -> TfidfVectorizer:
-    """Crea el vectorizador TF-IDF con unigramas y bigramas de palabras."""
+    """Crea el vectorizador TF-IDF definido por la configuración experimental."""
 
     return TfidfVectorizer(
+        analyzer=config.analyzer,
         lowercase=False,
         max_df=config.max_df,
         max_features=config.max_features,

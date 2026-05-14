@@ -5,10 +5,14 @@ from __future__ import annotations
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import joblib
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+from sklearn.base import ClassifierMixin
+from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.naive_bayes import ComplementNB, MultinomialNB
+from sklearn.svm import LinearSVC
 
 from reddit_mental_health.config import BaselineConfig, ensure_parent_dir
 from reddit_mental_health.features import ajustar_transformar_tfidf, transformar_tfidf
@@ -20,18 +24,59 @@ class BaselineModel:
 
     config: BaselineConfig
     vectorizer: object
-    classifier: LogisticRegression
+    classifier: ClassifierMixin
 
 
-def construir_clasificador(config: BaselineConfig) -> LogisticRegression:
-    """Crea la regresión logística recomendada por el diseño conceptual."""
+def construir_clasificador(config: BaselineConfig) -> ClassifierMixin:
+    """Crea el clasificador solicitado por la configuración experimental."""
 
-    return LogisticRegression(
-        C=config.logistic_c,
-        class_weight=config.class_weight,
-        max_iter=config.logistic_max_iter,
-        random_state=config.random_state,
-    )
+    if config.classifier_name == "logistic_regression":
+        return LogisticRegression(
+            C=config.logistic_c,
+            class_weight=config.class_weight,
+            max_iter=config.logistic_max_iter,
+            random_state=config.random_state,
+        )
+    if config.classifier_name == "linear_svm":
+        return LinearSVC(
+            C=config.linear_svm_c,
+            class_weight=config.class_weight,
+            dual="auto",
+            max_iter=config.linear_svm_max_iter,
+            random_state=config.random_state,
+        )
+    if config.classifier_name == "sgd_logistic":
+        return SGDClassifier(
+            alpha=config.sgd_alpha,
+            class_weight=config.class_weight,
+            loss="log_loss",
+            max_iter=config.sgd_max_iter,
+            random_state=config.random_state,
+        )
+    if config.classifier_name == "multinomial_nb":
+        return MultinomialNB(alpha=config.naive_bayes_alpha)
+    if config.classifier_name == "complement_nb":
+        return ComplementNB(alpha=config.naive_bayes_alpha)
+
+    raise ValueError(f"Clasificador no soportado: {config.classifier_name}")
+
+
+def _score_clase_positiva(
+    clasificador: Any,
+    x: object,
+    positive_value: int,
+) -> np.ndarray:
+    """Obtiene un puntaje continuo para la clase positiva."""
+
+    clases = list(clasificador.classes_)
+    indice_positivo = clases.index(positive_value)
+    if hasattr(clasificador, "predict_proba"):
+        return clasificador.predict_proba(x)[:, indice_positivo]
+
+    decision = np.asarray(clasificador.decision_function(x), dtype=float)
+    if decision.ndim == 1:
+        return decision
+    return decision[:, indice_positivo]
 
 
 def entrenar_baseline(
@@ -39,7 +84,7 @@ def entrenar_baseline(
     y_entrenamiento: Iterable[int],
     config: BaselineConfig,
 ) -> BaselineModel:
-    """Entrena TF-IDF + Regresión Logística sobre el conjunto de entrenamiento."""
+    """Entrena TF-IDF + el clasificador configurado sobre entrenamiento."""
 
     vectorizador, x_entrenamiento = ajustar_transformar_tfidf(
         textos_entrenamiento,
@@ -66,13 +111,11 @@ def predecir_baseline(
 
     x = transformar_tfidf(modelo.vectorizer, textos)
     y_pred = modelo.classifier.predict(x).astype(int)
-
-    if hasattr(modelo.classifier, "predict_proba"):
-        clases = list(modelo.classifier.classes_)
-        indice_positivo = clases.index(modelo.config.positive_value)
-        score = modelo.classifier.predict_proba(x)[:, indice_positivo]
-    else:
-        score = modelo.classifier.decision_function(x)
+    score = _score_clase_positiva(
+        modelo.classifier,
+        x,
+        modelo.config.positive_value,
+    )
 
     return y_pred.tolist(), score.astype(float).tolist()
 
