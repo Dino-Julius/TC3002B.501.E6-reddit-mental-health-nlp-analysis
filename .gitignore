@@ -33,6 +33,7 @@ data/processed/*
 data/processed/baseline_*.json
 data/processed/baseline_*.csv
 data/processed/*.joblib
+data/processed/experiments/
 !data/processed/.gitkeep
 
 # Reports
