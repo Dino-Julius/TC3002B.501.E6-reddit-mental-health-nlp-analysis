@@ -30,6 +30,9 @@ data/interim/*
 
 # Keep the processed data directory in the repo, but not generated contents
 data/processed/*
+data/processed/baseline_*.json
+data/processed/baseline_*.csv
+data/processed/*.joblib
 !data/processed/.gitkeep
 
 # Reports
@@ -60,6 +63,11 @@ reports/**/*.pdf
 
 # But allow final deliverable PDFs
 !reports/**/deliverables/*.pdf
+
+# Generated Phase 2B baseline dashboard outputs
+reports/phase-2b-baseline/assets/*.png
+reports/phase-2b-baseline/dashboard.html
+!reports/phase-2b-baseline/assets/.gitkeep
 
 # Notebook-specific checkpoints inside notebooks/
 notebooks/.ipynb_checkpoints/
