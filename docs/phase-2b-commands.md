@@ -26,6 +26,7 @@ Artefactos ignorados esperados:
 - `data/processed/experiments/`
 - `reports/phase-2b-implementation/assets/*.png`
 - `reports/phase-2b-implementation/dashboard.html`
+- `reports/phase-2b-implementation/comparison.html`
 
 ## Entrenamiento baseline
 
@@ -77,6 +78,28 @@ Salidas esperadas:
 - `reports/phase-2b-implementation/assets/score_distribution.png`
 - `reports/phase-2b-implementation/assets/prediction_distribution.png`
 - `reports/phase-2b-implementation/dashboard.html`
+
+## Dashboard comparativo de experimentos
+
+Genera visualizaciones comparativas desde el resumen agregado de corridas.
+
+```zsh
+uv run python scripts/visualize_experiment_comparison.py
+```
+
+Genera solo las figuras comparativas, sin dashboard HTML.
+
+```zsh
+uv run python scripts/visualize_experiment_comparison.py --no-dashboard
+```
+
+Salidas esperadas:
+
+- `reports/phase-2b-implementation/assets/experiment_protocol_auc_ranking.png`
+- `reports/phase-2b-implementation/assets/experiment_protocol_auc_heatmap.png`
+- `reports/phase-2b-implementation/assets/experiment_top_metrics.png`
+- `reports/phase-2b-implementation/assets/experiment_roc_vs_protocol_auc.png`
+- `reports/phase-2b-implementation/comparison.html`
 
 ## Tracking de una corrida
 
@@ -203,4 +226,10 @@ uv run python scripts/run_baseline_experiments.py \
 uv run ruff check src scripts tests
 uv run python -m compileall -q src scripts tests
 uv run pytest
+```
+
+6. Generar el comparativo final de experimentos:
+
+```zsh
+uv run python scripts/visualize_experiment_comparison.py
 ```
