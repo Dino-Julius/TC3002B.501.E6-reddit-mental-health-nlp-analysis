@@ -21,6 +21,7 @@ context/
 
 # Keep only placeholders/docs in raw data; ignore actual local datasets
 data/raw/*
+data/raw/data_test_fold*.csv
 !data/raw/.gitkeep
 !data/raw/README.md
 
@@ -34,6 +35,7 @@ data/processed/baseline_*.json
 data/processed/baseline_*.csv
 data/processed/*.joblib
 data/processed/experiments/
+data/processed/test_folds/
 !data/processed/.gitkeep
 
 # Reports
@@ -69,6 +71,7 @@ reports/**/*.pdf
 reports/phase-2b-implementation/assets/*.png
 reports/phase-2b-implementation/dashboard.html
 reports/phase-2b-implementation/comparison.html
+reports/phase-2b-implementation/test_fold*_dashboard.html
 !reports/phase-2b-implementation/assets/.gitkeep
 
 # Notebook-specific checkpoints inside notebooks/

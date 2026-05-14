@@ -101,6 +101,39 @@ Salidas esperadas:
 - `reports/phase-2b-implementation/assets/experiment_roc_vs_protocol_auc.png`
 - `reports/phase-2b-implementation/comparison.html`
 
+## Predicción del fold oficial de prueba
+
+El archivo `data_test_fold1.csv` debe colocarse en `data/raw/`. Aunque el fold
+incluya la columna `is_suicide`, esas etiquetas no se usan para entrenamiento,
+selección de modelo ni ajuste de hiperparámetros.
+
+Genera predicciones sin evaluar etiquetas:
+
+```zsh
+uv run python scripts/predict_test_fold.py --no-model
+```
+
+Genera predicciones y evalúa explícitamente porque este fold incluye etiquetas:
+
+```zsh
+uv run python scripts/predict_test_fold.py --no-model --evaluate-if-labeled
+```
+
+Salidas esperadas:
+
+- `data/processed/test_folds/data_test_fold1_predictions.csv`
+- `data/processed/test_folds/data_test_fold1_metrics.json`
+- `data/processed/test_folds/data_test_fold1_metadata.json`
+- `reports/phase-2b-implementation/test_fold1_dashboard.html`
+- `reports/phase-2b-implementation/assets/test_fold1_confusion_matrix.png`
+- `reports/phase-2b-implementation/assets/test_fold1_score_distribution.png`
+- `reports/phase-2b-implementation/assets/test_fold1_prediction_distribution.png`
+- `reports/phase-2b-implementation/assets/test_fold1_roc_curve.png`
+
+Las predicciones, métricas, modelos y dashboards generados quedan ignorados por
+git. La evaluación del fold solo debe consultarse después de fijar el workflow
+de predicción.
+
 ## Tracking de una corrida
 
 Ejecuta una corrida experimental versionada por `run_id`.
