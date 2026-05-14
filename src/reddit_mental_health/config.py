@@ -31,6 +31,9 @@ class BaselineConfig:
     interpretability_path: Path = (
         PROJECT_ROOT / "data" / "processed" / "baseline_interpretability.json"
     )
+    split_diagnostics_path: Path = (
+        PROJECT_ROOT / "data" / "processed" / "baseline_split_diagnostics.json"
+    )
 
     user_column: str = "user_id"
     text_id_column: str = "text_id"

@@ -29,7 +29,11 @@ from reddit_mental_health.preprocessing import (
     combinar_title_text,
     preprocesar_publicaciones,
 )
-from reddit_mental_health.splitting import separar_por_usuario
+from reddit_mental_health.splitting import (
+    guardar_diagnostico_split,
+    resumir_calidad_split,
+    separar_por_usuario,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -48,6 +52,11 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=config.interpretability_path,
     )
+    parser.add_argument(
+        "--split-diagnostics-out",
+        type=Path,
+        default=config.split_diagnostics_path,
+    )
     parser.add_argument("--validation-size", type=float, default=config.validation_size)
     parser.add_argument("--random-state", type=int, default=config.random_state)
     return parser.parse_args()
@@ -65,12 +74,14 @@ def main() -> None:
         predictions_path=args.predictions_out,
         metrics_path=args.metrics_out,
         interpretability_path=args.interpretability_out,
+        split_diagnostics_path=args.split_diagnostics_out,
         validation_size=args.validation_size,
         random_state=args.random_state,
     )
 
     datos = cargar_publicaciones_csv(config.input_path, config, require_label=True)
     entrenamiento, validacion = separar_por_usuario(datos, config)
+    diagnostico_split = resumir_calidad_split(entrenamiento, validacion, config)
 
     textos_entrenamiento = preprocesar_publicaciones(entrenamiento, config)
     textos_validacion = preprocesar_publicaciones(validacion, config)
@@ -108,10 +119,12 @@ def main() -> None:
     predicciones.to_csv(config.predictions_path, index=False)
     guardar_metricas(metricas, config.metrics_path)
     guardar_reporte_interpretabilidad(reporte, config.interpretability_path)
+    guardar_diagnostico_split(diagnostico_split, config.split_diagnostics_path)
 
     print(f"Modelo guardado en: {config.model_path}")
     print(f"Predicciones guardadas en: {config.predictions_path}")
     print(f"Métricas guardadas en: {config.metrics_path}")
+    print(f"Diagnóstico de split guardado en: {config.split_diagnostics_path}")
 
 
 if __name__ == "__main__":

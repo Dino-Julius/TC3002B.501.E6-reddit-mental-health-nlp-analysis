@@ -49,6 +49,7 @@ class RunPaths:
     metrics_path: Path
     predictions_path: Path
     interpretability_path: Path
+    split_diagnostics_path: Path
     model_path: Path
 
 
@@ -127,6 +128,7 @@ def construir_rutas_corrida(output_dir: str | Path, run_id: str) -> RunPaths:
         metrics_path=run_dir / "metrics.json",
         predictions_path=run_dir / "predictions.csv",
         interpretability_path=run_dir / "interpretability.json",
+        split_diagnostics_path=run_dir / "split_diagnostics.json",
         model_path=run_dir / "model.joblib",
     )
 

@@ -35,7 +35,10 @@ from reddit_mental_health.preprocessing import (
     combinar_title_text,
     preprocesar_publicaciones,
 )
-from reddit_mental_health.splitting import separar_por_usuario
+from reddit_mental_health.splitting import (
+    resumir_calidad_split,
+    separar_por_usuario,
+)
 from reddit_mental_health.tracking import (
     RunMetadata,
     actualizar_resumen,
@@ -209,6 +212,7 @@ def ejecutar_corrida(
         predictions_path=paths.predictions_path,
         metrics_path=paths.metrics_path,
         interpretability_path=paths.interpretability_path,
+        split_diagnostics_path=paths.split_diagnostics_path,
         validation_size=args.validation_size,
         random_state=args.random_state,
     )
@@ -223,6 +227,7 @@ def ejecutar_corrida(
     try:
         datos = cargar_publicaciones_csv(config.input_path, config, require_label=True)
         entrenamiento, validacion = separar_por_usuario(datos, config)
+        diagnostico_split = resumir_calidad_split(entrenamiento, validacion, config)
         textos_entrenamiento = preprocesar_publicaciones(entrenamiento, config)
         textos_validacion = preprocesar_publicaciones(validacion, config)
 
@@ -256,6 +261,7 @@ def ejecutar_corrida(
         predicciones.to_csv(paths.predictions_path, index=False)
         guardar_json(metricas, paths.metrics_path)
         guardar_json(reporte, paths.interpretability_path)
+        guardar_json(diagnostico_split, paths.split_diagnostics_path)
         if not args.no_model:
             guardar_modelo(modelo, paths.model_path)
 
