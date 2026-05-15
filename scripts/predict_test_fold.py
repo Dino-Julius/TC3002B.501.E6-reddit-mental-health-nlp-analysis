@@ -68,7 +68,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--classifier-name",
         choices=listar_clasificadores(),
-        default="logistic_regression",
+        default="complement_nb",
     )
     parser.add_argument(
         "--feature-config-name",

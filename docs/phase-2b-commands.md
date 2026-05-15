@@ -111,23 +111,26 @@ La validación cruzada es ahora el método preferido para selección de modelo.
 Usa únicamente `data_train.csv`: el fold oficial `data_test_fold1.csv` no se
 usa para elegir clasificador, configuración TF-IDF ni hiperparámetros. Las
 corridas single-split se conservan como baseline exploratorio e histórico.
+Con este criterio, el modelo final seleccionado por CV es `complement_nb` con
+`char_wb_3_5` (`mean_protocol_auc = 0.7281`, `std_protocol_auc = 0.0198`). El
+ganador single-split previo fue `logistic_regression` con `char_wb_3_5`.
 
 Corre la matriz completa de 20 combinaciones con 5 folds:
 
 ```zsh
-UV_NO_SYNC=1 uv run python scripts/run_cross_validation_experiments.py --classifier-name all --feature-config-name all --n-splits 5
+uv run python scripts/run_cross_validation_experiments.py --classifier-name all --feature-config-name all --n-splits 5
 ```
 
 Visualiza los resultados CV:
 
 ```zsh
-UV_NO_SYNC=1 uv run python scripts/visualize_cv_comparison.py
+uv run python scripts/visualize_cv_comparison.py
 ```
 
 Corre una sola combinación CV:
 
 ```zsh
-UV_NO_SYNC=1 uv run python scripts/run_cross_validation_experiments.py --classifier-name logistic_regression --feature-config-name char_wb_3_5 --n-splits 5
+uv run python scripts/run_cross_validation_experiments.py --classifier-name complement_nb --feature-config-name char_wb_3_5 --n-splits 5
 ```
 
 Salidas esperadas:
@@ -142,7 +145,8 @@ Salidas esperadas:
 - `reports/phase-2b-implementation/cross_validation.html`
 
 Después de elegir el modelo con CV, el fold oficial de prueba se evalúa solo
-como medición final del modelo ya seleccionado.
+como medición final del modelo ya seleccionado, no como insumo para volver a
+seleccionar modelo.
 
 ## Predicción del fold oficial de prueba
 
@@ -161,6 +165,16 @@ Genera predicciones y evalúa explícitamente porque este fold incluye etiquetas
 ```zsh
 uv run python scripts/predict_test_fold.py --no-model --evaluate-if-labeled
 ```
+
+Métricas oficiales del fold para el modelo CV seleccionado
+`complement_nb + char_wb_3_5`:
+
+- `protocol_auc`: 0.6878
+- `roc_auc`: 0.7503
+- `recall`: 0.6462
+- `precision`: 0.7179
+- `f1`: 0.6802
+- Matriz de confusión: TN = 89, FP = 33, FN = 46, TP = 84
 
 Salidas esperadas:
 
@@ -299,7 +313,7 @@ uv run python scripts/run_baseline_experiments.py \
 5. Correr validación cruzada para seleccionar modelo:
 
 ```zsh
-UV_NO_SYNC=1 uv run python scripts/run_cross_validation_experiments.py \
+uv run python scripts/run_cross_validation_experiments.py \
   --classifier-name all \
   --feature-config-name all \
   --n-splits 5
@@ -308,7 +322,7 @@ UV_NO_SYNC=1 uv run python scripts/run_cross_validation_experiments.py \
 6. Generar el dashboard de validación cruzada:
 
 ```zsh
-UV_NO_SYNC=1 uv run python scripts/visualize_cv_comparison.py
+uv run python scripts/visualize_cv_comparison.py
 ```
 
 7. Validar calidad antes de commit:
