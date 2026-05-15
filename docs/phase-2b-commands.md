@@ -11,6 +11,7 @@ La implementación actual incluye:
 - Visualizaciones PNG y dashboard HTML estático.
 - Tracking local ligero de corridas experimentales.
 - Matriz experimental de 5 clasificadores x 4 configuraciones de características.
+- Validación cruzada con `StratifiedGroupKFold` para selección de modelo sin fuga por `user_id`.
 - Pruebas unitarias para métricas, tracking, catálogo experimental y modelos.
 
 ## Reglas de artefactos
@@ -24,9 +25,12 @@ Artefactos ignorados esperados:
 - `data/processed/baseline_*.csv`
 - `data/processed/*.joblib`
 - `data/processed/experiments/`
+- `data/processed/cross_validation/`
 - `reports/phase-2b-implementation/assets/*.png`
+- `reports/phase-2b-implementation/assets/cv_*.png`
 - `reports/phase-2b-implementation/dashboard.html`
 - `reports/phase-2b-implementation/comparison.html`
+- `reports/phase-2b-implementation/cross_validation.html`
 
 ## Entrenamiento baseline
 
@@ -100,6 +104,45 @@ Salidas esperadas:
 - `reports/phase-2b-implementation/assets/experiment_top_metrics.png`
 - `reports/phase-2b-implementation/assets/experiment_roc_vs_protocol_auc.png`
 - `reports/phase-2b-implementation/comparison.html`
+
+## Validación cruzada para selección de modelo
+
+La validación cruzada es ahora el método preferido para selección de modelo.
+Usa únicamente `data_train.csv`: el fold oficial `data_test_fold1.csv` no se
+usa para elegir clasificador, configuración TF-IDF ni hiperparámetros. Las
+corridas single-split se conservan como baseline exploratorio e histórico.
+
+Corre la matriz completa de 20 combinaciones con 5 folds:
+
+```zsh
+UV_NO_SYNC=1 uv run python scripts/run_cross_validation_experiments.py --classifier-name all --feature-config-name all --n-splits 5
+```
+
+Visualiza los resultados CV:
+
+```zsh
+UV_NO_SYNC=1 uv run python scripts/visualize_cv_comparison.py
+```
+
+Corre una sola combinación CV:
+
+```zsh
+UV_NO_SYNC=1 uv run python scripts/run_cross_validation_experiments.py --classifier-name logistic_regression --feature-config-name char_wb_3_5 --n-splits 5
+```
+
+Salidas esperadas:
+
+- `data/processed/cross_validation/phase-2b-feedback/fold_results.csv`
+- `data/processed/cross_validation/phase-2b-feedback/summary_cv.csv`
+- `data/processed/cross_validation/phase-2b-feedback/summary_cv.json`
+- `data/processed/cross_validation/phase-2b-feedback/best_model_cv.json`
+- `reports/phase-2b-implementation/assets/cv_protocol_auc_ranking.png`
+- `reports/phase-2b-implementation/assets/cv_protocol_auc_heatmap.png`
+- `reports/phase-2b-implementation/assets/cv_metric_error_bars.png`
+- `reports/phase-2b-implementation/cross_validation.html`
+
+Después de elegir el modelo con CV, el fold oficial de prueba se evalúa solo
+como medición final del modelo ya seleccionado.
 
 ## Predicción del fold oficial de prueba
 
@@ -253,7 +296,22 @@ uv run python scripts/run_baseline_experiments.py \
   --no-model
 ```
 
-5. Validar calidad antes de commit:
+5. Correr validación cruzada para seleccionar modelo:
+
+```zsh
+UV_NO_SYNC=1 uv run python scripts/run_cross_validation_experiments.py \
+  --classifier-name all \
+  --feature-config-name all \
+  --n-splits 5
+```
+
+6. Generar el dashboard de validación cruzada:
+
+```zsh
+UV_NO_SYNC=1 uv run python scripts/visualize_cv_comparison.py
+```
+
+7. Validar calidad antes de commit:
 
 ```zsh
 uv run ruff check src scripts tests
@@ -261,7 +319,7 @@ uv run python -m compileall -q src scripts tests
 uv run pytest
 ```
 
-6. Generar el comparativo final de experimentos:
+8. Generar el comparativo final de experimentos single-split:
 
 ```zsh
 uv run python scripts/visualize_experiment_comparison.py
