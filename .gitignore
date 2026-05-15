@@ -35,6 +35,7 @@ data/processed/baseline_*.json
 data/processed/baseline_*.csv
 data/processed/*.joblib
 data/processed/experiments/
+data/processed/cross_validation/
 data/processed/test_folds/
 !data/processed/.gitkeep
 
@@ -69,8 +70,10 @@ reports/**/*.pdf
 
 # Generated Phase 2B implementation dashboard outputs
 reports/phase-2b-implementation/assets/*.png
+reports/phase-2b-implementation/assets/cv_*.png
 reports/phase-2b-implementation/dashboard.html
 reports/phase-2b-implementation/comparison.html
+reports/phase-2b-implementation/cross_validation.html
 reports/phase-2b-implementation/test_fold*_dashboard.html
 !reports/phase-2b-implementation/assets/.gitkeep
 
