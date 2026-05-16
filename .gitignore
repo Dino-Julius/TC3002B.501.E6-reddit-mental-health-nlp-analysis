@@ -64,6 +64,7 @@ reports/**/*.zip
 reports/**/*.pdf
 !reports/state-of-the-art/*.pdf
 !reports/conceptual-design/*.pdf
+!reports/phase-2b-implementation/*.pdf
 
 # But allow final deliverable PDFs
 !reports/**/deliverables/*.pdf
@@ -76,6 +77,8 @@ reports/phase-2b-implementation/comparison.html
 reports/phase-2b-implementation/cross_validation.html
 reports/phase-2b-implementation/test_fold*_dashboard.html
 !reports/phase-2b-implementation/assets/.gitkeep
+reports/phase-2b-implementation/*.docx
+reports/phase-2b-implementation/*.pptx
 
 # Notebook-specific checkpoints inside notebooks/
 notebooks/.ipynb_checkpoints/
