@@ -86,3 +86,6 @@ notebooks/.ipynb_checkpoints/
 
 # Temporary files directory
 tmp/
+
+# VS Code config files
+.vscode/
