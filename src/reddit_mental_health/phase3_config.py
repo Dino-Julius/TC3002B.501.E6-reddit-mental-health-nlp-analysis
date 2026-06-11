@@ -41,6 +41,25 @@ class Phase3Config:
     embeddings_metadata_path: Path = (
         PROJECT_ROOT / "data" / "processed" / "phase3" / "embeddings_metadata.json"
     )
+    embedding_classifiers_dir: Path = (
+        PROJECT_ROOT / "data" / "processed" / "phase3" / "embedding_classifiers"
+    )
+    embedding_classifiers_summary_csv_path: Path = (
+        PROJECT_ROOT
+        / "data"
+        / "processed"
+        / "phase3"
+        / "embedding_classifiers"
+        / "summary_embedding_classifiers.csv"
+    )
+    embedding_classifiers_summary_json_path: Path = (
+        PROJECT_ROOT
+        / "data"
+        / "processed"
+        / "phase3"
+        / "embedding_classifiers"
+        / "summary_embedding_classifiers.json"
+    )
 
     llm_raw_responses_path: Path = (
         PROJECT_ROOT / "data" / "processed" / "phase3" / "llm_zero_shot_responses.jsonl"

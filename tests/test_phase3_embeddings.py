@@ -6,12 +6,18 @@ from __future__ import annotations
 
 import json
 
+import numpy as np
 import pandas as pd
+import pytest
 
 from reddit_mental_health.config import BaselineConfig
 from reddit_mental_health.phase3_embeddings import (
+    construir_clasificador_embeddings,
     construir_predicciones_embeddings,
+    entrenar_clasificador_embeddings_por_nombre,
     generar_embeddings,
+    listar_clasificadores_embeddings,
+    obtener_score_clase_positiva,
 )
 
 
@@ -101,3 +107,54 @@ def test_construir_predicciones_embeddings_incluye_y_true() -> None:
         "y_true",
     ]
     assert predicciones["label_pred"].tolist() == ["yes", "no"]
+
+
+def test_listar_clasificadores_embeddings_define_matriz() -> None:
+    """
+    Verifica la matriz de clasificadores densos para Fase 3.
+    """
+
+    assert listar_clasificadores_embeddings() == (
+        "logistic_regression",
+        "linear_svm",
+        "sgd_logistic",
+    )
+
+
+def test_construir_clasificador_embeddings_rechaza_desconocido() -> None:
+    """
+    Verifica error claro para clasificadores no compatibles con embeddings.
+    """
+
+    with pytest.raises(ValueError, match="Clasificador de embeddings no soportado"):
+        construir_clasificador_embeddings("complement_nb", random_state=42)
+
+
+def test_entrenar_clasificadores_embeddings_y_scores() -> None:
+    """
+    Verifica entrenamiento y score continuo para los tres clasificadores.
+    """
+
+    x_train = np.array(
+        [
+            [0.0, 0.1],
+            [0.1, 0.0],
+            [2.0, 2.1],
+            [2.1, 2.0],
+        ]
+    )
+    y_train = [0, 0, 1, 1]
+    x_test = np.array([[0.2, 0.1], [2.2, 2.1]])
+
+    for classifier_name in listar_clasificadores_embeddings():
+        classifier = entrenar_clasificador_embeddings_por_nombre(
+            x_train,
+            y_train,
+            classifier_name,
+            random_state=42,
+        )
+        y_pred = classifier.predict(x_test)
+        score = obtener_score_clase_positiva(classifier, x_test, positive_value=1)
+
+        assert y_pred.shape == (2,)
+        assert score.shape == (2,)

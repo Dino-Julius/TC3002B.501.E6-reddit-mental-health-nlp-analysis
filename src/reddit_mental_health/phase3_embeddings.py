@@ -11,7 +11,10 @@ from typing import Protocol
 
 import numpy as np
 import pandas as pd
+from sklearn.base import ClassifierMixin
 from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import SGDClassifier
+from sklearn.svm import LinearSVC
 
 from reddit_mental_health.config import BaselineConfig, ensure_parent_dir
 from reddit_mental_health.evaluation import calcular_metricas, guardar_metricas
@@ -111,6 +114,85 @@ def entrenar_clasificador_embeddings(
     return classifier
 
 
+def construir_clasificador_embeddings(
+    classifier_name: str,
+    random_state: int,
+) -> ClassifierMixin:
+    """
+    Crea un clasificador compatible con embeddings densos.
+    """
+
+    if classifier_name == "logistic_regression":
+        return LogisticRegression(
+            class_weight="balanced",
+            max_iter=1_000,
+            random_state=random_state,
+        )
+    if classifier_name == "linear_svm":
+        return LinearSVC(
+            class_weight="balanced",
+            dual="auto",
+            max_iter=5_000,
+            random_state=random_state,
+        )
+    if classifier_name == "sgd_logistic":
+        return SGDClassifier(
+            alpha=0.0001,
+            class_weight="balanced",
+            loss="log_loss",
+            max_iter=1_000,
+            random_state=random_state,
+        )
+    disponibles = ", ".join(listar_clasificadores_embeddings())
+    raise ValueError(
+        f"Clasificador de embeddings no soportado: {classifier_name}. "
+        f"Disponibles: {disponibles}"
+    )
+
+
+def listar_clasificadores_embeddings() -> tuple[str, ...]:
+    """
+    Lista clasificadores densos evaluados en Fase 3.
+    """
+
+    return ("logistic_regression", "linear_svm", "sgd_logistic")
+
+
+def entrenar_clasificador_embeddings_por_nombre(
+    x_train: np.ndarray,
+    y_train: Sequence[int],
+    classifier_name: str,
+    random_state: int,
+) -> ClassifierMixin:
+    """
+    Entrena un clasificador denso por nombre estable.
+    """
+
+    classifier = construir_clasificador_embeddings(classifier_name, random_state)
+    classifier.fit(x_train, np.asarray(y_train, dtype=int))
+    return classifier
+
+
+def obtener_score_clase_positiva(
+    classifier: ClassifierMixin,
+    x_test: np.ndarray,
+    positive_value: int,
+) -> np.ndarray:
+    """
+    Obtiene puntajes continuos para calcular ROC AUC.
+    """
+
+    classes = list(classifier.classes_)
+    positive_index = classes.index(positive_value)
+    if hasattr(classifier, "predict_proba"):
+        return classifier.predict_proba(x_test)[:, positive_index]
+
+    decision = np.asarray(classifier.decision_function(x_test), dtype=float)
+    if decision.ndim == 1:
+        return decision
+    return decision[:, positive_index]
+
+
 def construir_predicciones_embeddings(
     test_data: pd.DataFrame,
     y_pred: Sequence[int],
@@ -152,8 +234,12 @@ def evaluar_y_guardar_embeddings(
 
 __all__ = [
     "EmbeddingClient",
+    "construir_clasificador_embeddings",
     "construir_predicciones_embeddings",
     "entrenar_clasificador_embeddings",
+    "entrenar_clasificador_embeddings_por_nombre",
     "evaluar_y_guardar_embeddings",
     "generar_embeddings",
+    "listar_clasificadores_embeddings",
+    "obtener_score_clase_positiva",
 ]
