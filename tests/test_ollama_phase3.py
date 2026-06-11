@@ -7,6 +7,7 @@ from __future__ import annotations
 import pytest
 
 from reddit_mental_health.ollama import (
+    construir_prompt_few_shot,
     construir_prompt_zero_shot,
     label_to_prediction,
     parse_llm_classification,
@@ -85,3 +86,24 @@ def test_construir_prompt_zero_shot_exige_json_y_no_diagnostico() -> None:
     assert '"label": "yes" or "no"' in prompt
     assert "Do not provide clinical advice" in prompt
     assert "I do not want to keep living." in prompt
+
+
+def test_construir_prompt_few_shot_incluye_ejemplos_y_post_final() -> None:
+    """
+    Verifica que el prompt few-shot incluya ejemplos y contrato JSON.
+    """
+
+    prompt = construir_prompt_few_shot(
+        "Final post",
+        [
+            {"label": "yes", "text": "I want to disappear forever."},
+            {"label": "no", "text": "I feel stressed but safe."},
+        ],
+    )
+
+    assert "Few-shot examples" in prompt
+    assert "Expected JSON" in prompt
+    assert '"label":"yes"' in prompt
+    assert '"label":"no"' in prompt
+    assert "Final Reddit post" in prompt
+    assert "Final post" in prompt

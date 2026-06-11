@@ -189,10 +189,59 @@ Reddit post:
 """.strip()
 
 
+def construir_prompt_few_shot(texto: str, examples: list[dict[str, str]]) -> str:
+    """
+    Construye prompt few-shot con ejemplos balanceados del conjunto de entrenamiento.
+    """
+
+    ejemplos = []
+    for index, example in enumerate(examples, start=1):
+        label = example["label"].strip().lower()
+        score = "0.90" if label == "yes" else "0.10"
+        ejemplos.append(
+            f"""
+Example {index}
+Reddit post:
+\"\"\"{example["text"][:1800]}\"\"\"
+Expected JSON:
+{{"label":"{label}","score":{score},"evidence":[],"justification":"Labeled training example."}}
+""".strip()
+        )
+
+    examples_block = "\n\n".join(ejemplos)
+    return f"""
+You are evaluating an academic NLP benchmark for suicidal ideation detection.
+Classify whether the final Reddit post contains suicidal ideation or suicidal risk.
+
+Return only valid JSON with this exact schema:
+{{
+  "label": "yes" or "no",
+  "score": number from 0.0 to 1.0,
+  "evidence": ["short quoted or paraphrased evidence"],
+  "justification": "brief explanation"
+}}
+
+Rules:
+- Use "yes" when the post expresses suicidal ideation, intent, planning,
+  self-harm intent, or explicit desire not to live.
+- Use "no" for depression, stress, sadness, or support-seeking without suicidal
+  ideation or self-harm intent.
+- The score is confidence for the "yes" class.
+- Do not provide clinical advice. Do not add text outside the JSON.
+
+Few-shot examples:
+{examples_block}
+
+Final Reddit post:
+\"\"\"{texto[:6000]}\"\"\"
+""".strip()
+
+
 __all__ = [
     "LlmClassification",
     "OllamaClient",
     "OllamaError",
+    "construir_prompt_few_shot",
     "construir_prompt_zero_shot",
     "label_to_prediction",
     "parse_llm_classification",

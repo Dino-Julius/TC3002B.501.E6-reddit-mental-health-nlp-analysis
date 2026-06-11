@@ -103,3 +103,39 @@ def test_guardar_comparacion_exporta_csv_y_json(tmp_path) -> None:
     assert csv_out.exists()
     payload = json.loads(json_out.read_text(encoding="utf-8"))
     assert payload["rows"][0]["method"] == "phase2b_baseline"
+
+
+def test_construir_comparacion_agrega_summaries_opcionales(tmp_path) -> None:
+    """
+    Verifica que el comparador pueda absorber matrices Phase 3 ya tabuladas.
+    """
+
+    baseline = tmp_path / "baseline.json"
+    _guardar_metricas(baseline, 0.6)
+    llm_summary = tmp_path / "llm_summary.csv"
+    llm_summary.write_text(
+        "\n".join(
+            [
+                "method,representation,classifier,protocol_auc,roc_auc",
+                "phase3_llm_few_shot,ollama_gemma3_4b,few_shot_prompt,0.7,0.8",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    args = argparse.Namespace(
+        baseline_metrics=baseline,
+        embeddings_metrics=tmp_path / "missing_embeddings.json",
+        llm_metrics=tmp_path / "missing_llm.json",
+        embedding_classifiers_summary=tmp_path / "missing_embedding_summary.csv",
+        llm_matrix_summary=llm_summary,
+        allow_missing=True,
+    )
+
+    frame = COMPARE_PHASE3.construir_comparacion(args)
+
+    assert "phase3_llm_few_shot" in frame["method"].tolist()
+    assert frame.loc[
+        frame["method"] == "phase3_llm_few_shot",
+        "classifier",
+    ].item() == "few_shot_prompt"

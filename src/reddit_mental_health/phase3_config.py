@@ -24,7 +24,13 @@ class Phase3Config:
     ollama_base_url: str = "http://localhost:11434"
     embedding_model: str = "nomic-embed-text"
     llm_model: str = "qwen2.5:3b-instruct"
+    llm_matrix_models: tuple[str, ...] = (
+        "qwen2.5:3b-instruct",
+        "llama3.2:3b",
+        "gemma3:4b",
+    )
     embedding_max_chars: int = 6_000
+    few_shot_examples_per_class: int = 3
 
     embeddings_train_cache: Path = (
         PROJECT_ROOT / "data" / "processed" / "phase3" / "embeddings_train.json"
@@ -72,6 +78,31 @@ class Phase3Config:
     )
     llm_metadata_path: Path = (
         PROJECT_ROOT / "data" / "processed" / "phase3" / "llm_zero_shot_metadata.json"
+    )
+    llm_matrix_dir: Path = PROJECT_ROOT / "data" / "processed" / "phase3" / "llm_matrix"
+    few_shot_examples_path: Path = (
+        PROJECT_ROOT
+        / "data"
+        / "processed"
+        / "phase3"
+        / "llm_matrix"
+        / "few_shot_examples.json"
+    )
+    llm_matrix_summary_csv_path: Path = (
+        PROJECT_ROOT
+        / "data"
+        / "processed"
+        / "phase3"
+        / "llm_matrix"
+        / "summary_llm_matrix.csv"
+    )
+    llm_matrix_summary_json_path: Path = (
+        PROJECT_ROOT
+        / "data"
+        / "processed"
+        / "phase3"
+        / "llm_matrix"
+        / "summary_llm_matrix.json"
     )
 
     comparison_csv_path: Path = (

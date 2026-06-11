@@ -22,6 +22,14 @@ from reddit_mental_health.phase3_config import Phase3Config
 DEFAULT_BASELINE_METRICS = (
     PROJECT_ROOT / "data" / "processed" / "phase3" / "baseline_fold2_metrics.json"
 )
+DEFAULT_EMBEDDING_CLASSIFIERS_SUMMARY = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "phase3"
+    / "embedding_classifiers"
+    / "summary_embedding_classifiers.csv"
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -34,6 +42,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--baseline-metrics", type=Path, default=DEFAULT_BASELINE_METRICS)
     parser.add_argument("--embeddings-metrics", type=Path, default=phase3.embeddings_metrics_path)
     parser.add_argument("--llm-metrics", type=Path, default=phase3.llm_metrics_path)
+    parser.add_argument(
+        "--embedding-classifiers-summary",
+        type=Path,
+        default=DEFAULT_EMBEDDING_CLASSIFIERS_SUMMARY,
+        help="CSV opcional con matriz de clasificadores sobre embeddings.",
+    )
+    parser.add_argument(
+        "--llm-matrix-summary",
+        type=Path,
+        default=phase3.llm_matrix_summary_csv_path,
+        help="CSV opcional con matriz de LLMs zero-shot/few-shot.",
+    )
     parser.add_argument("--csv-out", type=Path, default=phase3.comparison_csv_path)
     parser.add_argument("--json-out", type=Path, default=phase3.comparison_json_path)
     parser.add_argument(
@@ -98,6 +118,21 @@ def _fila_metodo(
     }
 
 
+def _leer_summary_csv(path: Path, allow_missing: bool) -> list[dict[str, object]]:
+    """
+    Lee summaries tabulares opcionales ya normalizados.
+    """
+
+    if not path.exists():
+        if allow_missing:
+            return []
+        raise FileNotFoundError(f"No existe el resumen comparativo: {path}")
+    frame = pd.read_csv(path)
+    if frame.empty:
+        return []
+    return frame.to_dict("records")
+
+
 def construir_comparacion(args: argparse.Namespace) -> pd.DataFrame:
     """
     Construye la tabla comparativa desde métricas JSON.
@@ -129,9 +164,20 @@ def construir_comparacion(args: argparse.Namespace) -> pd.DataFrame:
         if metrics is None:
             continue
         rows.append(_fila_metodo(method, representation, classifier, path, metrics))
+    for summary_path in (
+        getattr(args, "embedding_classifiers_summary", None),
+        getattr(args, "llm_matrix_summary", None),
+    ):
+        if summary_path is None:
+            continue
+        rows.extend(_leer_summary_csv(summary_path, allow_missing=True))
     if not rows:
         raise ValueError("No se encontró ningún archivo de métricas para comparar.")
-    return pd.DataFrame(rows)
+    frame = pd.DataFrame(rows)
+    return frame.drop_duplicates(
+        subset=["method", "representation", "classifier"],
+        keep="last",
+    )
 
 
 def guardar_comparacion(frame: pd.DataFrame, csv_out: Path, json_out: Path) -> None:
