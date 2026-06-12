@@ -1,6 +1,9 @@
 # macOS metadata
 .DS_Store
 
+# VS Code config files
+.vscode/
+
 # Python virtual environment and cache directories
 .venv/
 __pycache__/
@@ -9,83 +12,19 @@ __pycache__/
 .mypy_cache/
 .uv-cache/
 
-# Jupyter autosave checkpoints
-.ipynb_checkpoints/
-
-# Generic build and packaging artifacts
-build/
-dist/
-*.egg-info/
-
 # Local-only reference material and large private context files
 context/
 
 # Keep only placeholders/docs in raw data; ignore actual local datasets
 data/raw/*
-data/raw/data_test_fold*.csv
 !data/raw/.gitkeep
-!data/raw/README.md
-
-# Keep the interim data directory in the repo, but not generated contents
-data/interim/*
-!data/interim/.gitkeep
 
 # Keep the processed data directory in the repo, but not generated contents
 data/processed/*
-data/processed/baseline_*.json
-data/processed/baseline_*.csv
-data/processed/*.joblib
-data/processed/experiments/
-data/processed/cross_validation/
-data/processed/test_folds/
 !data/processed/.gitkeep
 
 # Reports
-# Track report source files by default.
-# Ignore generated LaTeX/build artifacts recursively inside reports/.
-
-reports/**/build/
-reports/**/*.aux
-reports/**/*.bbl
-reports/**/*.bcf
-reports/**/*.blg
-reports/**/*.fdb_latexmk
-reports/**/*.fls
-reports/**/*.log
-reports/**/*.out
-reports/**/*.run.xml
-reports/**/*.spl
-reports/**/*.synctex.gz
-reports/**/*.toc
-reports/**/*.lof
-reports/**/*.lot
-reports/**/*.zip
-
-# Generated PDFs inside reports
-reports/**/*.pdf
-!reports/state-of-the-art/*.pdf
-!reports/conceptual-design/*.pdf
-!reports/phase-2b-implementation/*.pdf
-
-# But allow final deliverable PDFs
-!reports/**/deliverables/*.pdf
-
-# Generated Phase 2B implementation dashboard outputs
-reports/phase-2b-implementation/assets/*.png
-reports/phase-2b-implementation/assets/cv_*.png
-reports/phase-2b-implementation/dashboard.html
-reports/phase-2b-implementation/comparison.html
-reports/phase-2b-implementation/cross_validation.html
-reports/phase-2b-implementation/test_fold*_dashboard.html
-!reports/phase-2b-implementation/assets/.gitkeep
-reports/phase-2b-implementation/*.docx
-reports/phase-2b-implementation/*.pptx
-
-# Notebook-specific checkpoints inside notebooks/
-notebooks/.ipynb_checkpoints/
+reports/*
 
 # Temporary files directory
 tmp/
-
-# VS Code config files
-.vscode/
